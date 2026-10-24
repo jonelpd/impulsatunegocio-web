@@ -41,6 +41,7 @@
 .diagnostic-layout{display:grid;grid-template-columns:1.05fr .95fr;gap:22px;align-items:stretch}.diagnostic-card,.diagnostic-result{border:1px solid var(--line);border-radius:24px;padding:28px;background:white}.diagnostic-intro{color:var(--muted)}.diagnostic-option{display:flex;align-items:flex-start;gap:13px;padding:16px 0;border-bottom:1px solid var(--line);cursor:pointer}.diagnostic-option input{width:19px;height:19px;margin-top:3px;accent-color:var(--green);flex:none}.diagnostic-option strong,.diagnostic-option small{display:block}.diagnostic-option strong{font-size:.95rem}.diagnostic-option small{font-size:.82rem;color:var(--muted);margin-top:3px}.diagnostic-card>.button{margin-top:20px}.diagnostic-result{background:var(--dark);color:white;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;min-height:360px}.diagnostic-result .tag{background:rgba(201,243,106,.15);color:var(--lime)}.diagnostic-result h3{font-size:clamp(1.55rem,2.8vw,2.2rem);line-height:1.1;letter-spacing:-.04em;margin:8px 0 13px}.diagnostic-result p{color:#c4d9cc}.diagnostic-result ul{padding-left:20px;color:#edf5ef;margin:4px 0 24px}.diagnostic-result li{margin:9px 0}.diagnostic-result .button{margin-top:auto}.diagnostic-result .button.light{background:var(--lime);color:var(--dark)}
 @media(max-width:850px){.diagnostic-layout{grid-template-columns:1fr}.diagnostic-result{min-height:unset}}
 
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #b17b16;outline-offset:3px}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
@@ -365,6 +366,9 @@ const BUSINESS_CONTACT_EMAIL = 'impulsatunegociospain@gmail.com';
 const BUSINESS_WHATSAPP_NUMBER = '34611886200';
 
 const contactSendOptions = document.getElementById('contactSendOptions');
+const contactForm = document.getElementById('contactForm');
+contactForm.addEventListener('input', () => { contactSendOptions.hidden = true; });
+contactForm.addEventListener('change', () => { contactSendOptions.hidden = true; });
 document.getElementById('contactForm').addEventListener('submit', event => {
   event.preventDefault();
   if (!event.currentTarget.reportValidity()) return;
@@ -384,7 +388,8 @@ document.getElementById('sendByWhatsApp').addEventListener('click', () => {
   const toast = document.getElementById('formToast');
   if (!BUSINESS_WHATSAPP_NUMBER) { toast.textContent = 'No se ha podido abrir WhatsApp. Comprueba que tienes WhatsApp instalado o abre WhatsApp Web.'; toast.classList.add('show'); return; }
   const message = encodeURIComponent(getContactBrief());
-  window.open(`https://wa.me/${BUSINESS_WHATSAPP_NUMBER}?text=${message}`, '_blank', 'noopener,noreferrer');
+  const popup = window.open(`https://wa.me/${BUSINESS_WHATSAPP_NUMBER}?text=${message}`, '_blank', 'noopener,noreferrer');
+  if (!popup) { toast.textContent = 'El navegador ha bloqueado la nueva ventana. Permite las ventanas emergentes para abrir WhatsApp.'; toast.classList.add('show'); }
 });
 document.getElementById('downloadBrief').addEventListener('click', () => {
   const form = document.getElementById('contactForm');
