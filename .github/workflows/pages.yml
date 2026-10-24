@@ -24,10 +24,16 @@ jobs:
         uses: actions/configure-pages@v5
         with:
           enablement: true
+      - name: Preparar carpeta pública
+        run: |
+          mkdir -p _site/portfolio
+          cp index.html _site/
+          cp .nojekyll _site/
+          cp portfolio/*.html _site/portfolio/
       - name: Preparar archivos públicos
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "."
+          path: "_site"
   deploy:
     environment:
       name: github-pages
