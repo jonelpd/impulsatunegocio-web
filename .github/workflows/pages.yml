@@ -24,6 +24,34 @@ jobs:
         uses: actions/configure-pages@v5
         with:
           enablement: true
+      - name: Verificar enlaces y archivos HTML
+        run: |
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          from urllib.parse import unquote, urlsplit
+          class Parser(HTMLParser):
+              def __init__(self):
+                  super().__init__(); self.ids=set(); self.links=[]
+              def handle_starttag(self, tag, attrs):
+                  d=dict(attrs)
+                  if d.get('id'): self.ids.add(d['id'])
+                  if tag=='a' and d.get('href'): self.links.append(d['href'])
+          files=list(Path('.').glob('*.html'))+list(Path('portfolio').glob('*.html'))
+          errors=[]
+          for file in files:
+              parser=Parser(); parser.feed(file.read_text(encoding='utf-8'))
+              for href in parser.links:
+                  url=urlsplit(href)
+                  if url.scheme or url.netloc: continue
+                  target=(file.parent/unquote(url.path)).resolve() if url.path else file.resolve()
+                  if not target.is_file(): errors.append(f'{file}: archivo inexistente: {href}'); continue
+                  if url.fragment and target.suffix=='.html':
+                      other=Parser(); other.feed(target.read_text(encoding='utf-8'))
+                      if unquote(url.fragment) not in other.ids: errors.append(f'{file}: ancla inexistente: {href}')
+          if errors: raise SystemExit('\\n'.join(errors))
+          print(f'Enlaces internos correctos en {len(files)} páginas HTML')
+          PY
       - name: Preparar carpeta pública
         run: |
           mkdir -p _site/portfolio
