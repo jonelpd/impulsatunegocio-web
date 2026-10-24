@@ -52,6 +52,35 @@ jobs:
           if errors: raise SystemExit('\\n'.join(errors))
           print(f'Enlaces internos correctos en {len(files)} páginas HTML')
           PY
+      - name: Verificar JavaScript y estructura HTML
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from html.parser import HTMLParser
+          import subprocess
+          class Audit(HTMLParser):
+              def __init__(self):
+                  super().__init__(); self.ids=[]; self.inline=[]; self.in_script=False; self.current=[]
+              def handle_starttag(self,tag,attrs):
+                  attrs=dict(attrs)
+                  if attrs.get('id'): self.ids.append(attrs['id'])
+                  if tag=='script' and not attrs.get('src'): self.in_script=True; self.current=[]
+              def handle_data(self,data):
+                  if self.in_script: self.current.append(data)
+              def handle_endtag(self,tag):
+                  if tag=='script' and self.in_script:
+                      self.inline.append(''.join(self.current)); self.in_script=False
+          errors=[]
+          for file in [Path('index.html'),*Path('portfolio').glob('*.html')]:
+              parser=Audit(); parser.feed(file.read_text(encoding='utf-8'))
+              for item in set(parser.ids):
+                  if parser.ids.count(item)>1: errors.append(f'{file}: id duplicado {item}')
+              for n,script in enumerate(parser.inline):
+                  result=subprocess.run(['node','--check','-'],input=script,text=True,capture_output=True)
+                  if result.returncode: errors.append(f'{file}: JavaScript {n+1}: {result.stderr}')
+          if errors: raise SystemExit('\\n'.join(errors))
+          print('Estructura HTML y JavaScript sin errores detectados')
+          PY
       - name: Preparar carpeta pública
         run: |
           mkdir -p _site/portfolio
