@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Diseño web y soluciones digitales para autónomos y pequeños negocios: webs profesionales, tiendas online y herramientas digitales.">
-<meta name="theme-color" content="#0e2b22">\n<link rel="icon" type="image/svg+xml" href="assets/impulsa-tu-negocio-ya-icon.svg">
+<meta name="theme-color" content="#0e2b22">
+<link rel="icon" type="image/svg+xml" href="assets/impulsa-tu-negocio-ya-icon.svg">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Impulsa tu Negocio Ya | Soluciones digitales">
 <meta property="og:description" content="Webs profesionales y soluciones digitales para autónomos y pequeños negocios.">
@@ -57,7 +58,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   .hero-actions .button{padding:12px 16px;min-height:50px}
 }
 @media(max-width:370px){.brand{font-size:.86rem}.brand span:last-child{font-size:.54rem}.menu-toggle{padding:8px;font-size:.82rem}h1{font-size:2.5rem}}
-.brandmark{background:transparent;overflow:hidden}.brandmark img{display:block;width:100%;height:100%;object-fit:contain}\n@media(max-width:560px){.brand>span:last-child{overflow-wrap:anywhere}.eyebrow{letter-spacing:.08em}.dash-title{overflow-wrap:anywhere}.contact-send-options .button{max-width:100%;white-space:normal}.footer-links a{white-space:normal}}\n</style>
+.brandmark{background:transparent;overflow:hidden}.brandmark img{display:block;width:100%;height:100%;object-fit:contain}
+@media(max-width:560px){.brand>span:last-child{overflow-wrap:anywhere}.eyebrow{letter-spacing:.08em}.dash-title{overflow-wrap:anywhere}.contact-send-options .button{max-width:100%;white-space:normal}.footer-links a{white-space:normal}}
+</style>
 </head>
 <body>
 <a class="skip-link" href="#inicio">Saltar al contenido</a>
@@ -318,7 +321,7 @@ const features = document.getElementById('features');
 const estimatePrice = document.getElementById('estimatePrice');
 const estimateTitle = document.getElementById('estimateTitle');
 const estimateText = document.getElementById('estimateText');
-let currentBrief = '';\nlet maintenanceEstimateActive = false;
+let currentBrief = '';
 function updateEstimate() {
   const item = estimateConfig[projectType.value];
   let low = item.low;
