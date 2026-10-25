@@ -71,7 +71,7 @@ jobs:
                   if tag=='script' and self.in_script:
                       self.inline.append(''.join(self.current)); self.in_script=False
           errors=[]
-          for file in [Path('index.html'),*Path('portfolio').glob('*.html')]:
+          for file in [Path('index.html'),Path('en.html'),*Path('portfolio').glob('*.html')]:
               parser=Audit(); parser.feed(file.read_text(encoding='utf-8'))
               for item in set(parser.ids):
                   if parser.ids.count(item)>1: errors.append(f'{file}: id duplicado {item}')
