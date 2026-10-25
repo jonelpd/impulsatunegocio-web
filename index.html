@@ -311,7 +311,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <div class="field"><label for="timing">¿Cuándo te gustaría empezar?</label><select id="timing" name="timing"><option>Estoy explorando opciones</option><option>En las próximas semanas</option><option>En uno o dos meses</option><option>Tengo una fecha concreta</option></select></div>
       <div class="field full"><label for="message">Cuéntanos tu idea</label><textarea id="message" name="message" required placeholder="¿Qué te gustaría conseguir? ¿Qué problema necesitas resolver?"></textarea></div>
       <p class="form-note">No se almacena la información en esta página. Al elegir un canal, se abrirá tu aplicación de correo o WhatsApp con un borrador que podrás revisar antes de enviarlo. No introduzcas datos sensibles.</p>
-      <div class="form-actions"><button class="button" type="submit">Elegir cómo contactar ↗</button><button class="button outline" type="button" id="downloadBrief">Descargar resumen</button></div><div class="contact-send-options" id="contactSendOptions" hidden><p><strong>¿Cómo quieres enviar tu solicitud?</strong></p><button class="button" type="button" id="sendByEmail">✉ Preparar correo</button><button class="button outline" type="button" id="sendByWhatsApp">◉ Preparar WhatsApp</button><p class="form-note">Se abrirá un borrador; tendrás que pulsar Enviar en tu aplicación.</p></div><div class="toast" id="formToast" role="status"></div>
+      <div class="field full" id="leadBackendPanel" hidden><div class="cf-turnstile" data-sitekey="0x4AAAAAAFlHalFuVVjyG60q"></div><label><input type="checkbox" id="leadPrivacyConsent" required> He leído la información de privacidad y acepto enviar mi solicitud para que sea atendida.</label></div><div class="form-actions"><button class="button" type="submit">Elegir cómo contactar ↗</button><button class="button outline" type="button" id="downloadBrief">Descargar resumen</button></div><div class="contact-send-options" id="contactSendOptions" hidden><p><strong>¿Cómo quieres enviar tu solicitud?</strong></p><button class="button" type="button" id="sendByEmail">✉ Preparar correo</button><button class="button outline" type="button" id="sendByWhatsApp">◉ Preparar WhatsApp</button><p class="form-note">Se abrirá un borrador; tendrás que pulsar Enviar en tu aplicación.</p></div><div class="toast" id="formToast" role="status"></div>
     </form>
   </div>
 </section>
@@ -578,6 +578,46 @@ document.getElementById('downloadBrief').addEventListener('click', () => {
   toast.textContent = 'Resumen descargado. Recuerda: no se ha enviado a ningún servidor.';
   toast.classList.add('show');
 });
+
+// Fase 3: backend preparado, activación pública bloqueada hasta completar
+// identidad del responsable, política de privacidad y prueba integral.
+const LEAD_BACKEND_ENABLED = false;
+const LEAD_ENDPOINT = 'https://drcapkpdvlwxspefxuvy.supabase.co/functions/v1/receive-lead';
+const leadPanel = document.getElementById('leadBackendPanel');
+if (LEAD_BACKEND_ENABLED) {
+  leadPanel.hidden = false;
+  const turnstileScript = document.createElement('script');
+  turnstileScript.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+  turnstileScript.async = true;
+  turnstileScript.defer = true;
+  document.head.appendChild(turnstileScript);
+  contactForm.addEventListener('submit', async event => {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    if (!contactForm.reportValidity()) return;
+    const token = leadPanel.querySelector('[name="cf-turnstile-response"]')?.value || '';
+    const status = document.getElementById('formToast');
+    if (!token) { status.textContent = 'Completa la verificación antispam.'; status.classList.add('show'); return; }
+    const submit = contactForm.querySelector('button[type="submit"]');
+    submit.disabled = true;
+    const d = new FormData(contactForm);
+    try {
+      const response = await fetch(LEAD_ENDPOINT, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+        locale:'es',name:d.get('name'),business:d.get('business'),email:d.get('email'),
+        service:d.get('service'),budget:d.get('budget'),timing:d.get('timing'),message:d.get('message'),turnstileToken:token
+      })});
+      const result = await response.json();
+      if (!response.ok || !result.ok) throw new Error('Submission failed');
+      status.textContent = 'Solicitud recibida. Referencia: ' + result.reference;
+      status.classList.add('show');
+      contactForm.reset();
+      document.getElementById('contactSendOptions').hidden = true;
+    } catch {
+      status.textContent = 'No hemos podido guardar tu solicitud. Puedes usar correo o WhatsApp.';
+      status.classList.add('show');
+    } finally { submit.disabled = false; if (window.turnstile) window.turnstile.reset(); }
+  }, {capture:true});
+}
 </script>
 </body>
 </html>
