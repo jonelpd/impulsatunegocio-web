@@ -17,13 +17,15 @@ Deno.serve(async req => {
   const smtp=nodemailer.createTransport({host:'smtp.gmail.com',port:465,secure:true,auth:{user,pass},connectionTimeout:6000,greetingTimeout:6000,socketTimeout:6000});
   let sent=0,failed=0;
   for(const item of pending||[]){
+    const {data:claimed,error:claimError}=await db.from('lead_email_outbox').update({attempts:item.attempts+1,last_error:null}).eq('lead_id',item.lead_id).eq('attempts',item.attempts).is('sent_at',null).select('lead_id').maybeSingle();
+    if(claimError||!claimed)continue;
     const {data:lead}=await db.from('leads').select('reference,name,email,business,service,budget,timing,message').eq('id',item.lead_id).maybeSingle();
     if(!lead)continue;
     try{
       await smtp.sendMail({from:user,to:user,replyTo:lead.email,subject:'Nueva solicitud web '+lead.reference,text:['Referencia: '+lead.reference,'Nombre: '+lead.name,'Correo: '+lead.email,'Empresa: '+(lead.business||''),'Servicio: '+lead.service,'Presupuesto: '+(lead.budget||''),'Plazo: '+(lead.timing||''),'Mensaje:',lead.message,'CRM: https://jonelpd.github.io/impulsatunegocio-web/crm-admin.html'].join('\n')});
-      await db.from('lead_email_outbox').update({sent_at:new Date().toISOString(),attempts:item.attempts+1,last_error:null}).eq('lead_id',item.lead_id).is('sent_at',null);
+      await db.from('lead_email_outbox').update({sent_at:new Date().toISOString(),last_error:null}).eq('lead_id',item.lead_id).is('sent_at',null);
       sent++;
-    }catch(e){await db.from('lead_email_outbox').update({attempts:item.attempts+1,last_error:String(e instanceof Error?e.message:'SMTP failure').slice(0,200)}).eq('lead_id',item.lead_id);failed++;}
+    }catch(e){await db.from('lead_email_outbox').update({last_error:String(e instanceof Error?e.message:'SMTP failure').slice(0,200)}).eq('lead_id',item.lead_id);failed++;}
   }
   return Response.json({processed:(pending||[]).length,sent,failed});
 });
