@@ -105,6 +105,18 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 @media(max-width:850px){.hero-grid{gap:30px}.hero{padding-top:48px}.hero .visual{width:100%;max-width:600px;margin-inline:auto}}
 @media(max-width:560px){.hero{padding-top:36px}.hero .lead{line-height:1.65}.hero .visual{border-radius:23px}.hero-actions{gap:10px}.hero-actions .button{min-height:49px}.section-head h2{overflow-wrap:break-word}}
 @media(prefers-reduced-motion:reduce){.card,.service-detail,.price-card{transition:none}}
+
+/* Tarjetas de servicios: jerarquía comercial y accesibilidad. */
+#servicios .cards{align-items:stretch;gap:20px}
+#servicios .card{display:flex;flex-direction:column;min-height:290px;padding:29px;border:1px solid #dbe7de;background:linear-gradient(155deg,#fff 65%,#f8fbf7 100%);box-shadow:0 4px 18px rgba(14,43,34,.035)}
+#servicios .card-icon{width:54px;height:54px;border-radius:16px;background:#e7f2e8;color:#176b4d;font-size:1.5rem;margin-bottom:17px}
+#servicios .card .tag{align-self:flex-start;margin-bottom:10px}
+#servicios .card h3{font-size:1.27rem;line-height:1.25;margin-bottom:12px}
+#servicios .card p{line-height:1.65;flex:1;margin-bottom:22px}
+#servicios .card .text-link{display:inline-flex;align-items:center;align-self:flex-start;min-height:40px;border-bottom:2px solid #b6d6bd}
+#servicios .card .text-link:hover{border-color:var(--green)}
+@media(max-width:850px){#servicios .cards{gap:15px}#servicios .card{padding:24px;min-height:270px}}
+@media(max-width:560px){#servicios .card{min-height:0;padding:24px}#servicios .card p{margin-bottom:14px}}
 </style>
 </head>
 <body>
