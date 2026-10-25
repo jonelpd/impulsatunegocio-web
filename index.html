@@ -138,6 +138,15 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .journey-note{margin:20px 0 12px;line-height:1.6;font-size:.91rem}
 .journey-link{min-height:47px;max-width:100%;white-space:normal}
 @media(max-width:560px){.journey-link{width:100%;text-align:center}}
+
+/* Configurador ampliado: campos de proyecto y funciones. */
+#planificador .planner-full{grid-column:1/-1}
+#planificador .planner-fields label{display:block;margin-bottom:7px;font-weight:700}
+#planificador .planner-fields input:not([type="checkbox"]),#planificador .planner-fields textarea{width:100%;padding:12px;border:1px solid #cbd8cf;border-radius:10px;font:inherit}
+#planificador .project-feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+#planificador .project-feature-grid label{display:flex;gap:8px;align-items:center;border:1px solid #dce5de;border-radius:10px;padding:10px;font-weight:500}
+#planificador .project-feature-grid input{accent-color:#176b4d}
+@media(max-width:560px){#planificador .project-feature-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -228,6 +237,23 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <div><label for="projectType">Tipo de proyecto</label><select id="projectType"><option value="presentation">Web de presentación</option><option value="business" selected>Web empresarial</option><option value="catalogue">Catálogo digital</option><option value="store">Tienda online</option><option value="custom">Aplicación o desarrollo a medida</option><option value="automation">Automatización de tareas</option></select></div>
         <div><label for="contentState">¿Tienes textos e imágenes?</label><select id="contentState"><option value="ready">Sí, están preparados</option><option value="partial" selected>Tengo parte del contenido</option><option value="none">Necesito ayuda para prepararlos</option></select></div>
         <div><label for="features">Funciones adicionales</label><select id="features"><option value="basic">Funciones básicas</option><option value="forms">Formularios o reservas avanzadas</option><option value="integrations">Integración con otras herramientas</option></select></div>
+        <div><label for="businessSector">Tipo de negocio</label><select id="businessSector"><option>Restaurante, bar o cafetería</option><option selected>Profesional o empresa de servicios</option><option>Comercio minorista</option><option>Tienda online</option><option>Asociación o proyecto personal</option><option>Otro tipo de negocio</option></select></div>
+        <div><label for="projectPages">Número aproximado de páginas</label><select id="projectPages"><option value="1">1 página</option><option value="5" selected>2–5 páginas</option><option value="8">6–8 páginas</option><option value="12">9 o más páginas</option></select></div>
+        <div><label for="projectTimeline">¿Cuándo te gustaría empezar?</label><select id="projectTimeline"><option>Lo antes posible</option><option selected>En las próximas 4–8 semanas</option><option>Más adelante / estoy explorando</option></select></div>
+        <div><label for="projectBudget">Presupuesto disponible</label><select id="projectBudget"><option>No lo tengo definido</option><option>Menos de 500 €</option><option>500–1.000 €</option><option>1.000–2.000 €</option><option>Más de 2.000 €</option></select></div>
+        <div><label for="projectMaintenance">Mantenimiento posterior</label><select id="projectMaintenance"><option value="no">No por ahora</option><option value="25">Esencial (desde 25 €/mes)</option><option value="49">Estándar (desde 49 €/mes)</option><option value="89">Avanzado (desde 89 €/mes)</option></select></div>
+        <div><label for="projectBusinessName">Nombre del negocio (opcional)</label><input id="projectBusinessName" maxlength="120" placeholder="Ej. Taller García"></div>
+        <div class="planner-full"><label>Funciones que te interesan</label><div class="project-feature-grid">
+          <label><input type="checkbox" class="project-feature" value="Formulario de contacto" checked> Formulario de contacto</label>
+          <label><input type="checkbox" class="project-feature" value="WhatsApp"> WhatsApp</label>
+          <label><input type="checkbox" class="project-feature" value="Mapa y horarios"> Mapa y horarios</label>
+          <label><input type="checkbox" class="project-feature" value="Catálogo de productos"> Catálogo de productos</label>
+          <label><input type="checkbox" class="project-feature" value="Reservas o citas"> Reservas o citas</label>
+          <label><input type="checkbox" class="project-feature" value="Carrito y pagos"> Carrito y pagos</label>
+          <label><input type="checkbox" class="project-feature" value="Blog o noticias"> Blog o noticias</label>
+          <label><input type="checkbox" class="project-feature" value="SEO técnico básico" checked> SEO técnico básico</label>
+        </div></div>
+        <div class="planner-full"><label for="projectNotes">Otros requisitos (opcional)</label><textarea id="projectNotes" rows="3" maxlength="2000" placeholder="Describe tu idea o las necesidades principales"></textarea></div>
       </div></div>
       <div class="estimate-result" aria-live="polite"><span class="eyebrow">Estimación orientativa</span><div class="price" id="estimatePrice">650–1.100 €</div><h3 id="estimateTitle">Web empresarial</h3><p id="estimateText">Una estimación inicial para orientar la conversación. El presupuesto real se prepara tras revisar el alcance.</p><button class="button light" type="button" id="prepareBrief">Preparar resumen del proyecto ↗</button><p class="journey-note"><strong>¿Quieres dar el siguiente paso?</strong> Esta estimación es orientativa. Cuéntanos tu proyecto para preparar una propuesta personalizada.</p><a class="button outline journey-link" href="#contacto">Continuar al contacto ↗</a><p class="copy-status" id="briefStatus" role="status">El resumen se genera en tu dispositivo y no se envía a ningún servidor.</p></div>
     </div>
@@ -403,23 +429,44 @@ const estimateText = document.getElementById('estimateText');
 let currentBrief = '';
 function updateEstimate() {
   const item = estimateConfig[projectType.value];
-  let low = item.low;
-  let high = item.high;
+  let low = item.low, high = item.high;
+  const pageCount = Number(document.getElementById('projectPages').value);
+  if (['presentation','business'].includes(projectType.value)) {
+    if (pageCount >= 8) { low += 250; high += 500; }
+    else if (pageCount === 5 && projectType.value === 'presentation') { low += 100; high += 180; }
+  }
   if (contentState.value === 'partial') { low += 80; high += 180; }
-  if (contentState.value === 'none') { low += 180; high += 450; }
+  if (contentState.value === 'none') { low += 220; high += 500; }
   if (features.value === 'forms') { low += 100; high += 250; }
   if (features.value === 'integrations') { low += 250; high += 700; }
+  const selected = [...document.querySelectorAll('.project-feature:checked')].map(el => el.value);
+  const extras = selected.filter(v => ['Reservas o citas','Carrito y pagos'].includes(v)).length;
+  low += extras * 100; high += extras * 250;
+  if (selected.includes('Catálogo de productos') && !['catalogue','store'].includes(projectType.value)) { low += 100; high += 250; }
   estimatePrice.textContent = `${low.toLocaleString('es-ES')}–${high.toLocaleString('es-ES')} €`;
   estimateTitle.textContent = item.title;
   estimateText.textContent = item.text + ' El presupuesto definitivo se confirmará tras revisar el alcance.';
-  currentBrief = `Resumen de proyecto
-Tipo: ${item.title}
-Contenido: ${{ready:'Textos e imágenes preparados',partial:'Contenido parcial',none:'Necesita apoyo para preparar contenidos'}[contentState.value]}
-Funciones: ${{basic:'Funciones básicas',forms:'Formularios o reservas avanzadas',integrations:'Integración con otras herramientas'}[features.value]}
-Horquilla orientativa mostrada: ${low}–${high} EUR
-Nota: estimación no contractual; pendiente de análisis y presupuesto formal.`;
+  const read = id => document.getElementById(id);
+  const maintenance = read('projectMaintenance').value;
+  currentBrief = `RESUMEN ORIENTATIVO DE PROYECTO
+Negocio: ${read('projectBusinessName').value.trim() || 'No indicado'}
+Sector: ${read('businessSector').value}
+Proyecto: ${item.title}
+Páginas: ${read('projectPages').selectedOptions[0].text}
+Contenido: ${contentState.selectedOptions[0].text}
+Funciones adicionales: ${features.selectedOptions[0].text}
+Funciones seleccionadas: ${selected.join(', ') || 'Ninguna'}
+Inicio deseado: ${read('projectTimeline').value}
+Presupuesto disponible: ${read('projectBudget').value}
+Mantenimiento: ${maintenance === 'no' ? 'No seleccionado' : 'Desde ' + maintenance + ' €/mes, por definir'}
+Estimación inicial: ${low}–${high} EUR
+Notas: ${read('projectNotes').value.trim() || 'Sin notas'}
+Estimación provisional y no vinculante. IVA, dominio, alojamiento, licencias y terceros por confirmar. El alcance final requiere revisión.`;
 }
-[projectType, contentState, features].forEach(el => el.addEventListener('change', updateEstimate));
+[projectType, contentState, features, ...['businessSector','projectPages','projectTimeline','projectBudget','projectMaintenance','projectBusinessName','projectNotes'].map(id => document.getElementById(id)), ...document.querySelectorAll('.project-feature')].forEach(el => {
+  el.addEventListener('change', updateEstimate);
+  if (el.matches('input,textarea')) el.addEventListener('input', updateEstimate);
+});
 updateEstimate();
 document.querySelectorAll('[data-service]').forEach(link => link.addEventListener('click', () => {
   const service = link.dataset.service;
