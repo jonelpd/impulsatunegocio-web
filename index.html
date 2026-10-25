@@ -133,6 +133,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 #proyectos .project-art{flex:1;min-height:70px}
 #proyectos .project .text-link{align-self:flex-start;margin-top:auto;padding:9px 0;min-height:42px}
 @media(max-width:560px){#precios .price-card{padding:25px}#proyectos .project{min-height:285px}}
+
+/* Customer journey: next step after the estimator. */
+.journey-note{margin:20px 0 12px;line-height:1.6;font-size:.91rem}
+.journey-link{min-height:47px;max-width:100%;white-space:normal}
+@media(max-width:560px){.journey-link{width:100%;text-align:center}}
 </style>
 </head>
 <body>
@@ -224,7 +229,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <div><label for="contentState">¿Tienes textos e imágenes?</label><select id="contentState"><option value="ready">Sí, están preparados</option><option value="partial" selected>Tengo parte del contenido</option><option value="none">Necesito ayuda para prepararlos</option></select></div>
         <div><label for="features">Funciones adicionales</label><select id="features"><option value="basic">Funciones básicas</option><option value="forms">Formularios o reservas avanzadas</option><option value="integrations">Integración con otras herramientas</option></select></div>
       </div></div>
-      <div class="estimate-result" aria-live="polite"><span class="eyebrow">Estimación orientativa</span><div class="price" id="estimatePrice">650–1.100 €</div><h3 id="estimateTitle">Web empresarial</h3><p id="estimateText">Una estimación inicial para orientar la conversación. El presupuesto real se prepara tras revisar el alcance.</p><button class="button light" type="button" id="prepareBrief">Preparar resumen del proyecto ↗</button><p class="copy-status" id="briefStatus" role="status">El resumen se genera en tu dispositivo y no se envía a ningún servidor.</p></div>
+      <div class="estimate-result" aria-live="polite"><span class="eyebrow">Estimación orientativa</span><div class="price" id="estimatePrice">650–1.100 €</div><h3 id="estimateTitle">Web empresarial</h3><p id="estimateText">Una estimación inicial para orientar la conversación. El presupuesto real se prepara tras revisar el alcance.</p><button class="button light" type="button" id="prepareBrief">Preparar resumen del proyecto ↗</button><p class="journey-note"><strong>¿Quieres dar el siguiente paso?</strong> Esta estimación es orientativa. Cuéntanos tu proyecto para preparar una propuesta personalizada.</p><a class="button outline journey-link" href="#contacto">Continuar al contacto ↗</a><p class="copy-status" id="briefStatus" role="status">El resumen se genera en tu dispositivo y no se envía a ningún servidor.</p></div>
     </div>
   </div>
   <div class="wrap" style="margin-top:22px"><div class="notice" style="background:#eaf3e9;color:#315847;border-radius:16px;padding:22px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap"><div><strong>¿Quieres definir más detalles?</strong><br><span>Cuéntanos qué necesita tu negocio y prepararemos una propuesta adaptada a tus objetivos.</span></div><a class="button" href="mailto:impulsatunegociospain@gmail.com?subject=Solicitud%20de%20propuesta%20web">Solicitar propuesta ↗</a></div></div>
