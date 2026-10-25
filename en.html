@@ -229,13 +229,13 @@ if (LEAD_BACKEND_ENABLED) {
         service:d.get('service'),budget:getProjectBudget(d),timing:d.get('timing'),message:d.get('message'),privacyConsent:document.getElementById('leadPrivacyConsent').checked,turnstileToken:token
       })});
       const result = await response.json();
-      if (!response.ok || !result.ok) throw new Error('Submission failed');
+      if (!response.ok || !result.ok) throw new Error(result?.error === 'Verification failed' ? 'turnstile' : result?.error === 'Invalid fields' ? 'fields' : 'server');
       status.textContent = 'Enquiry received. Reference: ' + result.reference;
       status.classList.add('show');
       contactForm.reset();
       document.getElementById('contactSendOptions').hidden = true;
-    } catch {
-      status.textContent = 'We could not save your enquiry. Please use email or WhatsApp.';
+    } catch (err) {
+      status.textContent = err.message === 'turnstile' ? 'Anti-spam verification expired or was rejected. Please verify again.' : err.message === 'fields' ? 'Check the fields: your message must contain at least 10 characters.' : 'Could not connect to the server. Please retry or use email or WhatsApp.';
       status.classList.add('show');
     } finally { submit.disabled = false; if (window.turnstile) window.turnstile.reset(); }
   }, {capture:true});
