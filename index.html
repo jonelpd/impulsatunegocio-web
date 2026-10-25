@@ -509,6 +509,7 @@ const contactForm = document.getElementById('contactForm');
 contactForm.addEventListener('input', () => { contactSendOptions.hidden = true; document.getElementById('formToast').classList.remove('show'); });
 contactForm.addEventListener('change', () => { contactSendOptions.hidden = true; document.getElementById('formToast').classList.remove('show'); });
 document.getElementById('contactForm').addEventListener('submit', event => {
+  if (LEAD_BACKEND_ENABLED) return;
   event.preventDefault();
   if (!event.currentTarget.reportValidity()) return;
   contactSendOptions.hidden = false;
@@ -544,7 +545,7 @@ document.getElementById('downloadBrief').addEventListener('click', () => {
   if (!form.reportValidity()) return;
   downloadText('solicitud-proyecto.txt', getContactBrief());
   const toast = document.getElementById('formToast');
-  toast.textContent = 'Resumen descargado. Recuerda: no se ha enviado a ningún servidor.';
+  toast.textContent = 'Resumen descargado en tu dispositivo. La descarga no envía una solicitud adicional.';
   toast.classList.add('show');
 });
 
