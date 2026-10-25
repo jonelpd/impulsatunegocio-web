@@ -38,9 +38,10 @@ Deno.serve(async (request) => {
   const service = field(data.service, 100);
   const locale = field(data.locale, 2);
   const token = field(data.turnstileToken, 2048);
+  const privacyConsent = data.privacyConsent === true;
   if (name.length < 2 || name.length > 120 || message.length < 10 || message.length > 6000 ||
       !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254 ||
-      service.length < 2 || service.length > 100 || !['es', 'en'].includes(locale) || !token) {
+      service.length < 2 || service.length > 100 || !['es', 'en'].includes(locale) || !token || !privacyConsent) {
     return response(400, { error: 'Invalid fields' }, allowedOrigin);
   }
   const challenge = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
