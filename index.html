@@ -308,7 +308,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <div class="field"><label for="email">Correo electrónico</label><input id="email" name="email" type="email" autocomplete="email" required placeholder="tu@correo.com"></div>
       <div class="field"><label for="service">¿Qué necesitas?</label><select id="service" name="service"><option>Diseño web</option><option>Tienda online</option><option>Automatización</option><option>Aplicación o sistema</option><option>Mantenimiento</option><option>Otra consulta</option></select></div>
       <div class="field"><label for="budget">Presupuesto aproximado</label><select id="budget" name="budget"><option value="Por definir">Todavía no lo sé</option><option>Menos de 500 €</option><option>500–1.000 €</option><option>1.000–2.500 €</option><option>Más de 2.500 €</option></select></div>
-      <div class="field"><label for="timing">¿Cuándo te gustaría empezar?</label><select id="timing" name="timing"><option>Estoy explorando opciones</option><option>En las próximas semanas</option><option>En uno o dos meses</option><option>Tengo una fecha concreta</option></select></div>
+      <div class="field"><label for="budgetExact">Tu presupuesto en euros (opcional)</label><input id="budgetExact" name="budgetExact" type="number" min="0" max="1000000" step="1" placeholder="Ej. 1500"><small>Si introduces una cantidad, sustituirá el intervalo anterior.</small></div><div class="field"><label for="timing">¿Cuándo te gustaría empezar?</label><select id="timing" name="timing"><option>Estoy explorando opciones</option><option>En las próximas semanas</option><option>En uno o dos meses</option><option>Tengo una fecha concreta</option></select></div>
       <div class="field full"><label for="message">Cuéntanos tu idea</label><textarea id="message" name="message" required placeholder="¿Qué te gustaría conseguir? ¿Qué problema necesitas resolver?"></textarea></div>
       <p class="form-note">No se almacena la información en esta página. Al elegir un canal, se abrirá tu aplicación de correo o WhatsApp con un borrador que podrás revisar antes de enviarlo. No introduzcas datos sensibles.</p>
       <div class="field full" id="leadBackendPanel" hidden><div class="cf-turnstile" data-sitekey="0x4AAAAAAFlHalFuVVjyG60q"></div><label><input type="checkbox" id="leadPrivacyConsent" required> He leído la información de privacidad y acepto enviar mi solicitud para que sea atendida.</label></div><div class="form-actions"><button class="button" type="submit">Elegir cómo contactar ↗</button><button class="button outline" type="button" id="downloadBrief">Descargar resumen</button></div><div class="contact-send-options" id="contactSendOptions" hidden><p><strong>¿Cómo quieres enviar tu solicitud?</strong></p><button class="button" type="button" id="sendByEmail">✉ Preparar correo</button><button class="button outline" type="button" id="sendByWhatsApp">◉ Preparar WhatsApp</button><p class="form-note">Se abrirá un borrador; tendrás que pulsar Enviar en tu aplicación.</p></div><div class="toast" id="formToast" role="status"></div>
@@ -486,10 +486,11 @@ document.getElementById('prepareBrief').addEventListener('click', async () => {
     status.textContent = currentBrief;
   }
 });
+function getProjectBudget(d){const exact=d.get('budgetExact');return exact!==null&&String(exact).trim()!==''?String(exact)+' €':d.get('budget')}
 function getContactBrief() {
   const form = document.getElementById('contactForm');
   const data = new FormData(form);
-  return `SOLICITUD DE PROYECTO — BORRADOR LOCAL\n\nNombre: ${data.get('name')}\nNegocio: ${data.get('business') || 'No indicado'}\nCorreo: ${data.get('email')}\nServicio: ${data.get('service')}\nPresupuesto: ${data.get('budget')}\nPlazo: ${data.get('timing')}\n\nIdea / necesidad:\n${data.get('message')}\n\nNota: esta solicitud se ha generado localmente y NO se ha enviado a ninguna empresa.`;
+  return `SOLICITUD DE PROYECTO — BORRADOR LOCAL\n\nNombre: ${data.get('name')}\nNegocio: ${data.get('business') || 'No indicado'}\nCorreo: ${data.get('email')}\nServicio: ${data.get('service')}\nPresupuesto: ${getProjectBudget(data)}\nPlazo: ${data.get('timing')}\n\nIdea / necesidad:\n${data.get('message')}\n\nNota: esta solicitud se ha generado localmente y NO se ha enviado a ninguna empresa.`;
 }
 function downloadText(filename, content) {
   const blob = new Blob([content], {type: 'text/plain;charset=utf-8'});
@@ -572,7 +573,7 @@ if (LEAD_BACKEND_ENABLED) {
     try {
       const response = await fetch(LEAD_ENDPOINT, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
         locale:'es',name:d.get('name'),business:d.get('business'),email:d.get('email'),
-        service:d.get('service'),budget:d.get('budget'),timing:d.get('timing'),message:d.get('message'),privacyConsent:document.getElementById('leadPrivacyConsent').checked,turnstileToken:token
+        service:d.get('service'),budget:getProjectBudget(d),timing:d.get('timing'),message:d.get('message'),privacyConsent:document.getElementById('leadPrivacyConsent').checked,turnstileToken:token
       })});
       const result = await response.json();
       if (!response.ok || !result.ok) throw new Error('Submission failed');
