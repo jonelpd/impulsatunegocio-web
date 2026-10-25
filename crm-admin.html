@@ -15,7 +15,26 @@ active=true;$('login').hidden=true;$('app').hidden=false;$('identity').textConte
 const {data,error}=await client.from('leads').select('id,reference,created_at,name,business,email,service,budget,timing,message,status').order('created_at',{ascending:false}).limit(100);
 if(error){$('appStatus').textContent='No se han podido cargar las solicitudes. Revisa permisos y conexión.';return}
 $('appStatus').textContent=(data?.length||0)+' solicitudes · máximo 100 recientes';$('list').replaceChildren();
-await loadCustomers();await loadQuotes();for(const lead of data||[]){const card=make('article','');card.className='lead';card.append(make('h3',lead.reference+' · '+lead.name),make('p',lead.business||'Sin empresa'),make('p','Servicio: '+lead.service+' · '+(lead.budget||'Sin presupuesto')),make('p','Correo: '+lead.email),make('p','Plazo: '+(lead.timing||'Sin definir')),make('p',lead.message));const label=make('label','Estado comercial');const select=document.createElement('select');for(const [key,value] of Object.entries(statuses)){const opt=document.createElement('option');opt.value=key;opt.textContent=value;select.append(opt)}select.value=lead.status;label.append(select);card.append(label);select.addEventListener('change',async()=>{if(!active)return;select.disabled=true;const {error}=await client.from('leads').update({status:select.value}).eq('id',lead.id);if(error){$('appStatus').textContent='No se pudo guardar el cambio.';select.value=lead.status}else{lead.status=select.value;$('appStatus').textContent='Estado actualizado.'}select.disabled=false});$('list').append(card)}
+await loadCustomers();await loadQuotes();for(const lead of data||[]){const card=make('article','');card.className='lead';card.append(make('h3',lead.reference+' · '+lead.name),make('p',lead.business||'Sin empresa'),make('p','Servicio: '+lead.service+' · '+(lead.budget||'Sin presupuesto')),make('p','Correo: '+lead.email),make('p','Plazo: '+(lead.timing||'Sin definir')),make('p',lead.message));const label=make('label','Estado comercial');const select=document.createElement('select');for(const [key,value] of Object.entries(statuses)){const opt=document.createElement('option');opt.value=key;opt.textContent=value;select.append(opt)}select.value=lead.status;label.append(select);card.append(label);select.addEventListener('change',async()=>{if(!active)return;select.disabled=true;const {error}=await client.from('leads').update({status:select.value}).eq('id',lead.id);if(error){$('appStatus').textContent='No se pudo guardar el cambio.';select.value=lead.status}else{lead.status=select.value;$('appStatus').textContent='Estado actualizado.'}select.disabled=false});
+const convert=make('button','Convertir en cliente');convert.type='button';convert.style.marginTop='10px';
+convert.onclick=async()=>{
+ if(!active)return;
+ convert.disabled=true;$('appStatus').textContent='Comprobando la ficha del cliente…';
+ try{
+  const email=(lead.email||'').trim().toLowerCase();
+  if(!email)throw Error('La solicitud no contiene correo; revisa los datos antes de crear la ficha.');
+  const {data:existing,error:lookupError}=await client.from('crm_customers').select('id,name,email').ilike('email',email).limit(1);
+  if(lookupError)throw lookupError;
+  if(existing?.length){$('appStatus').textContent='Ya existe una ficha con ese correo: '+existing[0].name+'. No se ha creado un duplicado.';return}
+  if(!window.confirm('¿Crear una ficha de cliente a partir de la solicitud de '+lead.name+' ('+email+')?')){$('appStatus').textContent='Conversión cancelada.';return}
+  const payload={name:lead.name.trim(),business:(lead.business||'').trim(),email,phone:'',notes:'Origen: solicitud '+lead.reference+'\\nServicio: '+(lead.service||'')+'\\nPresupuesto indicado: '+(lead.budget||'')+'\\nPlazo: '+(lead.timing||'')+'\\nMensaje: '+(lead.message||'')};
+  const {data:created,error:createError}=await client.from('crm_customers').insert(payload).select('id').single();
+  if(createError)throw createError;
+  if(!created?.id)throw Error('No se confirmó la creación de la ficha');
+  await loadCustomers();$('appStatus').textContent='Ficha creada desde '+lead.reference+'. Ya aparece en Clientes de prueba.';
+ }catch(error){$('appStatus').textContent='No se pudo convertir la solicitud: '+(error.message||'Error desconocido')}finally{convert.disabled=false}
+};
+card.append(convert);$('list').append(card)}
 }
 
 async function downloadQuotePDF(q){
