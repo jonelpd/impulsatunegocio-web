@@ -81,6 +81,37 @@ jobs:
           if errors: raise SystemExit('\\n'.join(errors))
           print('Estructura HTML y JavaScript sin errores detectados')
           PY
+      - name: Verificar coherencia de configuradores y contacto
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from html.parser import HTMLParser
+          import re
+          class Audit(HTMLParser):
+              def __init__(self):
+                  super().__init__(); self.ids=set(); self.labels=set(); self.controls={}
+              def handle_starttag(self,tag,attrs):
+                  d=dict(attrs)
+                  if d.get('id'): self.ids.add(d['id'])
+                  if tag=='label' and d.get('for'): self.labels.add(d['for'])
+                  if tag in ('input','select','textarea') and d.get('id'): self.controls[d['id']]=tag
+          expected={'projectType','contentState','features','businessSector','projectPages','projectTimeline','projectBudget','projectMaintenance','projectBusinessName','projectNotes','estimatePrice','estimateTitle','estimateText','prepareBrief','briefStatus','contactForm','name','email','message','sendByEmail','sendByWhatsApp','downloadBrief','contactSendOptions'}
+          for path in ('index.html','en.html'):
+              source=Path(path).read_text(encoding='utf-8')
+              audit=Audit(); audit.feed(source)
+              missing=expected-audit.ids
+              assert not missing, f'{path}: missing project/contact controls: {sorted(missing)}'
+              unlabeled=set(audit.controls)-audit.labels
+              unlabeled={id for id in unlabeled if id in expected and id not in {'contactForm'}}
+              assert not unlabeled, f'{path}: unlabeled controls: {sorted(unlabeled)}'
+              for price in (('presentation',390,650),('business',790,1200),('catalogue',590,950),('store',1490,2800),('custom',1800,4500),('automation',350,1200)):
+                  name,low,high=price
+                  pattern=rf'{name}\s*:\s*(?:\{{[^}}]*?low:\s*{low},\s*high:\s*{high}|\[[^\]]*?,\s*{low},\s*{high},)'
+                  assert re.search(pattern,source), f'{path}: unexpected base range for {name}'
+              assert 'reportValidity()' in source, f'{path}: missing contact validation'
+              assert 'encodeURIComponent(contactBrief())' in source or 'encodeURIComponent(getContactBrief())' in source, f'{path}: missing encoded contact draft'
+              print(f'{path}: configurator and contact checks passed')
+          PY
       - name: Preparar carpeta pública
         run: |
           mkdir -p _site/portfolio _site/assets
