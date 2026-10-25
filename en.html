@@ -177,6 +177,15 @@ document.querySelector('#planner .journey-link').addEventListener('click',()=>{
   if(!message.value.trim())message.value=brief;
   const businessName=document.getElementById('projectBusinessName').value.trim();
   if(businessName&&!document.getElementById('business').value.trim())document.getElementById('business').value=businessName;
+  const plannedBudget=document.getElementById('projectBudget').value;
+  const budget=document.getElementById('budget');
+  const budgetMap={'Under €500':'Under €500','€500–€1,000':'€500–€1,000','€1,000–€2,000':'€1,000–€2,500','Over €2,000':'Over €2,500'};
+  if(budgetMap[plannedBudget])budget.value=budgetMap[plannedBudget];
+  const timeline=document.getElementById('projectTimeline').value;
+  const timing=document.getElementById('timing');
+  if(timeline==='As soon as possible')timing.value='Within 1 month';
+  else if(timeline==='Within 4–8 weeks')timing.value='Within 1–3 months';
+  else timing.value='Later';
   const type=projectType.value;
   document.getElementById('service').value=type==='store'?'Online store':type==='automation'?'Automation':type==='custom'?'Custom application':'Website design';
 });
