@@ -470,6 +470,7 @@ document.getElementById('contactForm').addEventListener('submit', event => {
   toast.classList.add('show');
 });
 document.getElementById('sendByEmail').addEventListener('click', () => {
+  if (!contactForm.reportValidity()) return;
   const toast = document.getElementById('formToast');
   if (!BUSINESS_CONTACT_EMAIL) { toast.textContent = 'No se ha podido abrir la aplicación de correo. Comprueba que tienes una aplicación de correo configurada en tu dispositivo.'; toast.classList.add('show'); return; }
   const subject = encodeURIComponent('Nueva solicitud de proyecto web');
@@ -477,11 +478,19 @@ document.getElementById('sendByEmail').addEventListener('click', () => {
   window.location.href = `mailto:${BUSINESS_CONTACT_EMAIL}?subject=${subject}&body=${body}`;
 });
 document.getElementById('sendByWhatsApp').addEventListener('click', () => {
+  if (!contactForm.reportValidity()) return;
   const toast = document.getElementById('formToast');
   if (!BUSINESS_WHATSAPP_NUMBER) { toast.textContent = 'No se ha podido abrir WhatsApp. Comprueba que tienes WhatsApp instalado o abre WhatsApp Web.'; toast.classList.add('show'); return; }
   const message = encodeURIComponent(getContactBrief());
-  const popup = window.open(`https://wa.me/${BUSINESS_WHATSAPP_NUMBER}?text=${message}`, '_blank', 'noopener,noreferrer');
-  if (!popup) { toast.textContent = 'El navegador ha bloqueado la nueva ventana. Permite las ventanas emergentes para abrir WhatsApp.'; toast.classList.add('show'); }
+  const link = document.createElement('a');
+  link.href = `https://wa.me/${BUSINESS_WHATSAPP_NUMBER}?text=${message}`;
+  link.target = '_blank';
+  link.rel = 'noopener noreferrer';
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  toast.textContent = 'Se ha preparado WhatsApp. Revisa el mensaje y pulsa Enviar en tu aplicación.';
+  toast.classList.add('show');
 });
 document.getElementById('downloadBrief').addEventListener('click', () => {
   const form = document.getElementById('contactForm');
