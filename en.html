@@ -15,6 +15,18 @@
 @media(max-width:560px){.nav{gap:7px;min-height:78px}.brand{gap:7px;flex:1;min-width:0}.brand img{width:46px;height:46px}.brand-name{font-size:clamp(.96rem,3.95vw,1.2rem)}.brand-tag{font-size:.43rem;letter-spacing:.02em}.language-switch{padding:2px}.language-switch a{padding:5px 6px;font-size:.68rem}.menu-toggle{padding:8px;font-size:.75rem}.hero{padding:40px 0}h1{font-size:clamp(2.5rem,11vw,3.1rem)}.hero-actions .button{width:100%}.grid,.portfolio,.steps,.pricing{grid-template-columns:1fr}.section{padding:58px 0}.footer .wrap{display:block}.footer-links{margin-top:15px}.visual{padding:22px}.visual h2{font-size:1.7rem}}
 @media(max-width:380px){.brand img{width:40px;height:40px}.brand-name{font-size:.91rem}.brand-tag{display:none}.menu-toggle{font-size:.7rem;padding:7px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* Professional presentation shared with the Spanish version. */
+.hero{background:radial-gradient(circle at 88% 12%,rgba(201,243,106,.15),transparent 36%),linear-gradient(180deg,#fbfdf9 0%,var(--paper) 100%)}
+.hero-grid{gap:clamp(28px,4.5vw,60px)}
+.hero .lead{line-height:1.72;max-width:570px}
+.hero-actions .button{min-height:50px;box-shadow:0 7px 18px rgba(23,107,77,.09)}
+.hero .visual{box-shadow:0 24px 65px rgba(14,43,34,.16)}
+.card{transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.card:hover{border-color:#a7c7b2;box-shadow:0 15px 36px rgba(14,43,34,.08)}
+@media(max-width:850px){.hero-grid{gap:30px}.hero{padding-top:48px}.hero .visual{width:100%;max-width:600px;margin-inline:auto}}
+@media(max-width:560px){.hero{padding-top:36px}.hero .lead{line-height:1.65}.hero .visual{border-radius:23px}.hero-actions{gap:10px}.hero-actions .button{min-height:49px}}
+@media(prefers-reduced-motion:reduce){.card{transition:none}}
 </style>
 </head>
 <body>
