@@ -1,6 +1,7 @@
 // Supabase Edge Function. Configurar TURNSTILE_SECRET_KEY y ALLOWED_ORIGIN
 // en secretos del proyecto. Requiere verificación Turnstile del lado servidor.
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import nodemailer from 'npm:nodemailer@7.0.10';
 
 const allowedOrigin = Deno.env.get('ALLOWED_ORIGIN') || 'https://jonelpd.github.io';
 const publicIntakeEnabled = Deno.env.get('PUBLIC_LEADS_ENABLED') === 'true';
@@ -61,6 +62,43 @@ Deno.serve(async (request) => {
   if (error) {
     console.error('Lead storage failed', error.code);
     return response(503, { error: 'Unable to save request' }, allowedOrigin);
+  }
+  // Email is best-effort: a mail failure must never discard a saved lead.
+  const gmailUser = Deno.env.get('GMAIL_USER') || '';
+  const gmailPassword = (Deno.env.get('GMAIL_APP_PASSWORD') || '').replace(/\s/g, '');
+  if (gmailUser && gmailPassword) {
+    try {
+      const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com', port: 465, secure: true,
+        auth: { user: gmailUser, pass: gmailPassword },
+        connectionTimeout: 7000, greetingTimeout: 7000, socketTimeout: 7000,
+      });
+      const mail = [
+        'Nueva solicitud web — Impulsa tu Negocio Ya',
+        'Referencia: ' + reference,
+        'Nombre: ' + name,
+        'Correo: ' + email,
+        'Empresa: ' + field(data.business, 160),
+        'Servicio: ' + service,
+        'Presupuesto: ' + field(data.budget, 100),
+        'Plazo: ' + field(data.timing, 100),
+        'Idioma: ' + locale,
+        'Mensaje:', message,
+        '',
+        'Ver solicitud en el CRM: https://jonelpd.github.io/impulsatunegocio-web/crm-admin.html',
+      ].join('\n');
+      await transporter.sendMail({
+        from: gmailUser, to: gmailUser,
+        replyTo: email,
+        subject: 'Nueva solicitud web ' + reference,
+        text: mail,
+      });
+      console.info('Lead email notification sent', reference);
+    } catch (mailError) {
+      console.error('Lead saved but email notification failed', reference, mailError instanceof Error ? mailError.message : 'unknown');
+    }
+  } else {
+    console.warn('Lead saved without email notification: Gmail secrets missing');
   }
   return response(201, { ok: true, reference }, allowedOrigin);
 });
