@@ -2,7 +2,8 @@
 // en secretos del proyecto. Requiere verificación Turnstile del lado servidor.
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
-const allowedOrigin = Deno.env.get('ALLOWED_ORIGIN') || '';
+const allowedOrigin = Deno.env.get('ALLOWED_ORIGIN') || 'https://jonelpd.github.io';
+const publicIntakeEnabled = Deno.env.get('PUBLIC_LEADS_ENABLED') === 'true';
 const secret = Deno.env.get('TURNSTILE_SECRET_KEY') || '';
 const url = Deno.env.get('SUPABASE_URL') || '';
 const roleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
@@ -28,10 +29,11 @@ Deno.serve(async (request) => {
   if (!allowedOrigin || origin !== allowedOrigin) return response(403, { error: 'Origin not allowed' }, allowedOrigin);
   if (request.method === 'OPTIONS') return response(204, {}, allowedOrigin);
   if (request.method !== 'POST') return response(405, { error: 'Method not allowed' }, allowedOrigin);
+  if (!publicIntakeEnabled) return response(503, { error: 'Public intake not enabled' }, allowedOrigin);
   if (!secret || !url || !roleKey) return response(503, { error: 'Service not configured' }, allowedOrigin);
   if (Number(request.headers.get('content-length') || 0) > 16000) return response(413, { error: 'Payload too large' }, allowedOrigin);
   let data: Record<string, unknown>;
-  try { data = await request.json(); } catch { return response(400, { error: 'Invalid JSON' }, allowedOrigin); }
+  try { const raw=await request.text();if(raw.length>16000)return response(413,{error:'Payload too large'},allowedOrigin);const parsed=JSON.parse(raw);if(!parsed||typeof parsed!=='object'||Array.isArray(parsed))throw Error('Invalid JSON');data=parsed; } catch { return response(400, { error: 'Invalid JSON' }, allowedOrigin); }
   const name = field(data.name, 120);
   const email = field(data.email, 254);
   const message = field(data.message, 6000);
