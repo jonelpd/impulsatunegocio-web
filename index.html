@@ -117,6 +117,22 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 #servicios .card .text-link:hover{border-color:var(--green)}
 @media(max-width:850px){#servicios .cards{gap:15px}#servicios .card{padding:24px;min-height:270px}}
 @media(max-width:560px){#servicios .card{min-height:0;padding:24px}#servicios .card p{margin-bottom:14px}}
+
+/* Presentación comercial: precios y proyectos. */
+#precios .pricing-grid{align-items:stretch;gap:20px}
+#precios .price-card{display:flex;flex-direction:column;padding:30px;border-radius:24px;border:1px solid #dbe7de;box-shadow:0 8px 26px rgba(14,43,34,.045)}
+#precios .price-card.featured{border:2px solid #176b4d;box-shadow:0 15px 38px rgba(23,107,77,.12);position:relative}
+#precios .price-card h3{font-size:1.36rem;line-height:1.2}
+#precios .price-card .price{letter-spacing:-.055em}
+#precios .price-card ul{flex:1;line-height:1.75}
+#precios .price-card .button{margin-top:auto;min-height:49px;text-align:center}
+#proyectos .portfolio{gap:20px;align-items:stretch}
+#proyectos .project{display:flex;flex-direction:column;overflow:hidden;border-radius:24px;box-shadow:0 10px 28px rgba(14,43,34,.065)}
+#proyectos .project h3{line-height:1.25}
+#proyectos .project p{line-height:1.65}
+#proyectos .project-art{flex:1;min-height:70px}
+#proyectos .project .text-link{align-self:flex-start;margin-top:auto;padding:9px 0;min-height:42px}
+@media(max-width:560px){#precios .price-card{padding:25px}#proyectos .project{min-height:285px}}
 </style>
 </head>
 <body>
@@ -236,7 +252,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 </section>
 <section class="section" id="proyectos">
   <div class="wrap"><div class="section-head"><div><span class="eyebrow">Proyectos y demostraciones</span><h2>El trabajo hablará por nosotros.</h2></div><p>Esta sección crecerá con proyectos propios y trabajos reales que podamos mostrar con autorización.</p></div>
-    <div class="portfolio"><article class="project primary"><span class="project-label">Demo 01 · Restaurante</span><h3>La Huerta — Cocina de temporada</h3><p>Una web conceptual con carta de ejemplo, información práctica y un acceso claro a consultas y reservas.</p><div class="project-art" aria-hidden="true"></div><a class="text-link" style="position:relative;z-index:2" href="portfolio/restaurante.html">Ver demostración ↗</a></article><article class="project secondary"><span class="project-label">Demo 02 · Servicios</span><h3>Norte Estudio — Servicios profesionales</h3><p>Ejemplo para un profesional o pequeño negocio: servicios, proceso de trabajo y formulario ilustrativo.</p><div class="project-art" aria-hidden="true"></div><a class="text-link" style="position:relative;z-index:2" href="portfolio/servicios.html">Ver demostración ↗</a></article><article class="project primary"><span class="project-label">Demo 03 · Comercio electrónico</span><h3>Casa Serena — Tienda online</h3><p>Catálogo ficticio con fichas de producto y carrito interactivo de muestra, sin pagos ni pedidos reales.</p><div class="project-art" aria-hidden="true"></div><a class="text-link" style="position:relative;z-index:2" href="portfolio/tienda-online.html">Ver demostración ↗</a></article><article class="project secondary"><span class="project-label">Proyecto propio</span><h3>AhorraEnCasaYa</h3><p>Proyecto digital en desarrollo sobre ahorro energético doméstico. No se atribuyen resultados comerciales ni métricas no verificadas.</p><div class="project-art" aria-hidden="true"></div><a class="text-link" style="position:relative;z-index:2" href="https://ahorraencasaya.es/" target="_blank" rel="noopener noreferrer">Visitar proyecto ↗</a></article></div><p class="demo-note">Las tres demostraciones son conceptos ficticios de portfolio, no clientes reales. Los formularios y la reserva son simulados; la tienda no procesa pedidos ni pagos. Para publicarlas, habrá que subir estos archivos junto a la página principal en la misma carpeta.</p>
+    <div class="portfolio"><article class="project primary"><span class="project-label">Demo 01 · Restaurante</span><h3>La Huerta — Cocina de temporada</h3><p>Una web conceptual con carta de ejemplo, información práctica y un acceso claro a consultas y reservas.</p><div class="project-art" aria-hidden="true"></div><a class="text-link" style="position:relative;z-index:2" href="portfolio/restaurante.html">Ver demostración ↗</a></article><article class="project secondary"><span class="project-label">Demo 02 · Servicios</span><h3>Norte Estudio — Servicios profesionales</h3><p>Ejemplo para un profesional o pequeño negocio: servicios, proceso de trabajo y formulario ilustrativo.</p><div class="project-art" aria-hidden="true"></div><a class="text-link" style="position:relative;z-index:2" href="portfolio/servicios.html">Ver demostración ↗</a></article><article class="project primary"><span class="project-label">Demo 03 · Comercio electrónico</span><h3>Casa Serena — Tienda online</h3><p>Catálogo ficticio con fichas de producto y carrito interactivo de muestra, sin pagos ni pedidos reales.</p><div class="project-art" aria-hidden="true"></div><a class="text-link" style="position:relative;z-index:2" href="portfolio/tienda-online.html">Ver demostración ↗</a></article><article class="project secondary"><span class="project-label">Proyecto propio</span><h3>AhorraEnCasaYa</h3><p>Proyecto digital en desarrollo sobre ahorro energético doméstico. No se atribuyen resultados comerciales ni métricas no verificadas.</p><div class="project-art" aria-hidden="true"></div><a class="text-link" style="position:relative;z-index:2" href="https://ahorraencasaya.es/" target="_blank" rel="noopener noreferrer">Visitar proyecto ↗</a></article></div><p class="demo-note">Las tres demostraciones son conceptos ficticios de portafolio, no clientes reales. Los formularios y las reservas son simulados; la tienda no procesa pedidos ni pagos.</p>
   </div>
 </section>
 <section class="section white">
