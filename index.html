@@ -575,13 +575,13 @@ if (LEAD_BACKEND_ENABLED) {
         service:d.get('service'),budget:getProjectBudget(d),timing:d.get('timing'),message:d.get('message'),privacyConsent:document.getElementById('leadPrivacyConsent').checked,turnstileToken:token
       })});
       const result = await response.json();
-      if (!response.ok || !result.ok) throw new Error('Submission failed');
+      if (!response.ok || !result.ok) throw new Error(result?.error === 'Verification failed' ? 'turnstile' : result?.error === 'Invalid fields' ? 'fields' : 'server');
       status.textContent = 'Solicitud recibida. Referencia: ' + result.reference;
       status.classList.add('show');
       contactForm.reset();
       document.getElementById('contactSendOptions').hidden = true;
-    } catch {
-      status.textContent = 'No hemos podido guardar tu solicitud. Puedes usar correo o WhatsApp.';
+    } catch (err) {
+      status.textContent = err.message === 'turnstile' ? 'La verificación antispam ha caducado o ha sido rechazada. Actualízala y vuelve a enviar.' : err.message === 'fields' ? 'Revisa los campos: el mensaje debe tener al menos 10 caracteres.' : 'No hemos podido conectar con el servidor. Inténtalo de nuevo o utiliza correo o WhatsApp.';
       status.classList.add('show');
     } finally { submit.disabled = false; if (window.turnstile) window.turnstile.reset(); }
   }, {capture:true});
