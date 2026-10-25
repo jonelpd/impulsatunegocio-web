@@ -9,7 +9,7 @@ const url = Deno.env.get('SUPABASE_URL') || '';
 const roleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
 
 function response(status: number, payload: Record<string, unknown>, origin: string) {
-  return new Response(JSON.stringify(payload), {
+  return new Response(status === 204 ? null : JSON.stringify(payload), {
     status,
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
