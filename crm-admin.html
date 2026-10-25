@@ -25,7 +25,18 @@ async function downloadQuotePDF(q){
  let y=43;
  function newPage(){doc.addPage();y=25;doc.setDrawColor(220,230,223);doc.line(18,18,192,18)}
  function line(text,size=10,bold=false){doc.setFont('helvetica',bold?'bold':'normal');doc.setFontSize(size);const chunks=doc.splitTextToSize(String(text||''),174);for(const part of chunks){if(y>266)newPage();doc.text(part,margin,y);y+=size*.48+2}}
- doc.setFillColor(20,60,48);doc.rect(0,0,w,31,'F');doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(17);doc.text('IMPULSA TU NEGOCIO YA',margin,16);doc.setFontSize(9);doc.text('Presupuesto interno - documento de prueba',margin,23);doc.setTextColor(28,51,41);
+ // Misma marca y logotipo SVG utilizados en el encabezado de la web.
+ doc.setFillColor(247,248,244);doc.rect(0,0,w,35,'F');doc.setDrawColor(220,229,222);doc.line(0,35,w,35);
+ try{
+  const response=await fetch('assets/impulsa-tu-negocio-ya-icon.svg');
+  if(!response.ok)throw Error('No se pudo cargar el logotipo');
+  const svg=await response.text(),blob=new Blob([svg],{type:'image/svg+xml;charset=utf-8'}),url=URL.createObjectURL(blob);
+  try{const img=new Image();await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=url});const canvas=document.createElement('canvas');canvas.width=288;canvas.height=288;const ctx=canvas.getContext('2d');ctx.drawImage(img,0,0,288,288);doc.addImage(canvas.toDataURL('image/png'),'PNG',18,5,25,25)}finally{URL.revokeObjectURL(url)}
+ }catch(error){throw Error('No se pudo incorporar el logotipo oficial: '+error.message)}
+ doc.setTextColor(14,43,34);doc.setFont('helvetica','bold');doc.setFontSize(18);doc.text('Impulsa tu',48,15);
+ doc.setTextColor(23,107,77);doc.text('Negocio Ya',48,23);
+ doc.setTextColor(96,113,106);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.text('WEB  ·  TECNOLOGIA  ·  CRECIMIENTO',48,29);
+ doc.setTextColor(28,51,41);
  doc.setFontSize(12);line('PRESUPUESTO BORRADOR',14,true);
  line('Referencia interna: '+String(q.id).slice(0,8).toUpperCase(),10);line('Fecha de creacion: '+new Date(q.created_at).toLocaleDateString('es-ES'),10);
  y+=4;line('Cliente: '+q.customer_name,11,true);line('Servicio: '+q.service_description);y+=4;
