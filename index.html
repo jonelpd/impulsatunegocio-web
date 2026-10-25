@@ -60,6 +60,24 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 @media(max-width:370px){.brand{font-size:.86rem}.brand span:last-child{font-size:.54rem}.menu-toggle{padding:8px;font-size:.82rem}h1{font-size:2.5rem}}
 .brandmark{background:transparent;overflow:hidden}.brandmark img{display:block;width:100%;height:100%;object-fit:contain}
 @media(max-width:560px){.brand>span:last-child{overflow-wrap:anywhere}.eyebrow{letter-spacing:.08em}.dash-title{overflow-wrap:anywhere}.contact-send-options .button{max-width:100%;white-space:normal}.footer-links a{white-space:normal}}
+
+/* Cabecera de marca: jerarquía clara y navegación adaptable. */
+.header{background:rgba(255,255,255,.97);box-shadow:0 6px 28px rgba(14,43,34,.055);border-bottom:1px solid #e0e9e2}
+.nav{min-height:104px;height:auto;gap:22px;padding-top:14px;padding-bottom:14px}
+.brand{display:flex;align-items:center;gap:16px;min-width:0;flex:0 1 auto;font-size:inherit;letter-spacing:normal;text-decoration:none}
+.brandmark{width:68px;height:68px;flex:0 0 68px;border-radius:16px;overflow:hidden;background:#f7f8f4}
+.brandmark img{width:100%;height:100%;display:block;object-fit:contain}
+.brand-copy{display:flex;flex-direction:column;min-width:0;gap:5px}
+.brand .brand-name{display:block;font-size:clamp(1.36rem,2.15vw,1.88rem);font-weight:850;letter-spacing:-.052em;line-height:1.03;color:#0e2b22}
+.brand .brand-name>span{display:block;color:#176b4d}
+.brand .brand-name b{color:#68ae28;font-weight:900}
+.brand .brand-tagline{display:block!important;margin:0!important;font-size:.61rem!important;letter-spacing:.13em!important;line-height:1.45!important;font-weight:800!important;color:#526b5d!important;text-transform:uppercase}
+.navlinks{gap:clamp(11px,1.45vw,22px);font-size:.86rem;white-space:nowrap}
+.navlinks .button{padding:12px 17px}
+@media(max-width:1050px){.nav{min-height:90px}.brandmark{width:58px;height:58px;flex-basis:58px}.brand .brand-name{font-size:1.48rem}.navlinks{gap:11px;font-size:.81rem}}
+@media(max-width:850px){.nav{min-height:88px;padding-top:12px;padding-bottom:12px;gap:12px}.brand{flex:1 1 auto;gap:12px}.brandmark{width:60px;height:60px;flex-basis:60px}.brand .brand-name{font-size:1.42rem}.menu-toggle{flex:0 0 auto;min-height:43px;font-weight:750}.navlinks{top:100%;white-space:normal;box-shadow:0 18px 25px rgba(14,43,34,.1)}}
+@media(max-width:560px){.nav{min-height:78px;height:auto;padding-top:10px;padding-bottom:10px}.brand{gap:10px;font-size:inherit}.brandmark{width:52px;height:52px;flex-basis:52px}.brand .brand-name{font-size:clamp(1.05rem,4.5vw,1.35rem);letter-spacing:-.045em}.brand .brand-tagline{font-size:.48rem!important;letter-spacing:.055em!important;line-height:1.35!important}.brand-copy{gap:4px}.menu-toggle{font-size:.82rem;padding:9px 10px}.navlinks{top:100%}.brand>span:last-child{overflow-wrap:normal}}
+@media(max-width:370px){.brandmark{width:45px;height:45px;flex-basis:45px}.brand .brand-name{font-size:1.03rem}.brand .brand-tagline{font-size:.43rem!important;letter-spacing:.02em!important}.menu-toggle{padding:8px;font-size:.78rem}}
 </style>
 </head>
 <body>
@@ -68,7 +86,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 <header class="header">
   <div class="wrap nav">
     <a class="brand" href="#inicio" aria-label="Impulsa tu Negocio Ya — Inicio">
-      <span class="brandmark"><img src="assets/impulsa-tu-negocio-ya-icon.svg" width="38" height="38" alt="" aria-hidden="true"></span><span>Impulsa tu Negocio Ya<span>Web · Tecnología · Crecimiento</span></span>
+      <span class="brandmark"><img src="assets/impulsa-tu-negocio-ya-icon.svg" width="64" height="64" alt="" aria-hidden="true"></span><span class="brand-copy"><strong class="brand-name">Impulsa tu <span>Negocio <b>Ya</b></span></strong><span class="brand-tagline">WEB · TECNOLOGÍA · CRECIMIENTO</span></span>
     </a>
     <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="navLinks" aria-label="Abrir menú">Menú ☰</button>
     <nav class="navlinks" id="navLinks" aria-label="Navegación principal">
