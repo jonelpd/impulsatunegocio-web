@@ -311,7 +311,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <div class="field"><label for="budgetExact">Tu presupuesto en euros (opcional)</label><input id="budgetExact" name="budgetExact" type="number" min="0" max="1000000" step="1" placeholder="Ej. 1500"><small>Si introduces una cantidad, sustituirá el intervalo anterior.</small></div><div class="field"><label for="timing">¿Cuándo te gustaría empezar?</label><select id="timing" name="timing"><option>Estoy explorando opciones</option><option>En las próximas semanas</option><option>En uno o dos meses</option><option>Tengo una fecha concreta</option></select></div>
       <div class="field full"><label for="message">Cuéntanos tu idea</label><textarea id="message" name="message" required placeholder="¿Qué te gustaría conseguir? ¿Qué problema necesitas resolver?"></textarea></div>
       <p class="form-note">No se almacena la información en esta página. Al elegir un canal, se abrirá tu aplicación de correo o WhatsApp con un borrador que podrás revisar antes de enviarlo. No introduzcas datos sensibles.</p>
-      <div class="field full" id="leadBackendPanel" hidden><div class="cf-turnstile" data-sitekey="0x4AAAAAAFlHalFuVVjyG60q"></div><label><input type="checkbox" id="leadPrivacyConsent" required> He leído la <a href="#privacidad">política de privacidad</a> y solicito que se atienda mi consulta.</label></div><div class="form-actions"><button class="button" type="submit">Elegir cómo contactar ↗</button><button class="button outline" type="button" id="downloadBrief">Descargar resumen</button></div><div class="contact-send-options" id="contactSendOptions" hidden><p><strong>¿Cómo quieres enviar tu solicitud?</strong></p><button class="button" type="button" id="sendByEmail">✉ Preparar correo</button><button class="button outline" type="button" id="sendByWhatsApp">◉ Preparar WhatsApp</button><p class="form-note">Se abrirá un borrador; tendrás que pulsar Enviar en tu aplicación.</p></div><div class="toast" id="formToast" role="status"></div>
+      <div class="field full" id="leadBackendPanel" hidden><div class="cf-turnstile" data-sitekey="0x4AAAAAAFlHalFuVVjyG60q"></div><label><input type="checkbox" id="leadPrivacyConsent" required> He leído la <a href="#privacidad">política de privacidad</a> y solicito que se atienda mi consulta.</label></div><div class="form-actions"><button class="button" type="submit">Enviar solicitud automáticamente ↗</button><button class="button outline" type="button" id="downloadBrief">Descargar resumen</button></div><div class="contact-send-options" id="contactSendOptions" hidden><p><strong>¿Cómo quieres enviar tu solicitud?</strong></p><button class="button" type="button" id="sendByEmail">✉ Preparar correo</button><button class="button outline" type="button" id="sendByWhatsApp">◉ Preparar WhatsApp</button><p class="form-note">Se abrirá un borrador; tendrás que pulsar Enviar en tu aplicación.</p></div><div class="toast" id="formToast" role="status"></div>
     </form>
   </div>
 </section>
@@ -548,9 +548,8 @@ document.getElementById('downloadBrief').addEventListener('click', () => {
   toast.classList.add('show');
 });
 
-// Fase 3: backend preparado, activación pública bloqueada hasta completar
-// identidad del responsable, política de privacidad y prueba integral.
-const LEAD_BACKEND_ENABLED = false;
+// Recepción automática activada; validación de campos, privacidad y Turnstile obligatorias.
+const LEAD_BACKEND_ENABLED = true;
 const LEAD_ENDPOINT = 'https://drcapkpdvlwxspefxuvy.supabase.co/functions/v1/receive-lead';
 const leadPanel = document.getElementById('leadBackendPanel');
 if (LEAD_BACKEND_ENABLED) {
