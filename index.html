@@ -440,7 +440,7 @@ function updateEstimate() {
   if (features.value === 'forms') { low += 100; high += 250; }
   if (features.value === 'integrations') { low += 250; high += 700; }
   const selected = [...document.querySelectorAll('.project-feature:checked')].map(el => el.value);
-  const extras = selected.filter(v => ['Reservas o citas','Carrito y pagos'].includes(v)).length;
+  const extras = selected.filter(v => ['Reservas o citas','Carrito y pagos'].includes(v) && !(v === 'Reservas o citas' && features.value === 'forms')).length;
   low += extras * 100; high += extras * 250;
   if (selected.includes('Catálogo de productos') && !['catalogue','store'].includes(projectType.value)) { low += 100; high += 250; }
   estimatePrice.textContent = `${low.toLocaleString('es-ES')}–${high.toLocaleString('es-ES')} €`;
@@ -483,6 +483,18 @@ document.querySelectorAll('[data-service]').forEach(link => link.addEventListene
   projectType.value = map[service] || 'business';
   updateEstimate();
 }));
+document.querySelector('#planificador .journey-link').addEventListener('click', () => {
+  const message = document.getElementById('message');
+  if (!message.value.trim()) message.value = currentBrief;
+  const businessName = document.getElementById('projectBusinessName').value.trim();
+  const businessInput = document.getElementById('business');
+  if (businessName && !businessInput.value.trim()) businessInput.value = businessName;
+  const budgetSelect = document.getElementById('budget');
+  const plannedBudget = document.getElementById('projectBudget').value;
+  const option = [...budgetSelect.options].find(o => o.value === plannedBudget || o.text === plannedBudget);
+  if (option) budgetSelect.value = option.value;
+  document.getElementById('service').value = projectType.value === 'store' ? 'Tienda online' : projectType.value === 'automation' ? 'Automatización' : projectType.value === 'custom' ? 'Aplicación o sistema' : 'Diseño web';
+});
 document.getElementById('prepareBrief').addEventListener('click', async () => {
   const status = document.getElementById('briefStatus');
   try {
