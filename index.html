@@ -498,7 +498,15 @@ document.querySelector('#planificador .journey-link').addEventListener('click', 
   const budgetSelect = document.getElementById('budget');
   const plannedBudget = document.getElementById('projectBudget').value;
   const option = [...budgetSelect.options].find(o => o.value === plannedBudget || o.text === plannedBudget);
-  if (option && !maintenanceOnly) budgetSelect.value = option.value;
+  if (!maintenanceOnly) {
+    const budgetMap = {'1.000–2.000 €':'1.000–2.500 €','Más de 2.000 €':'Más de 2.500 €'};
+    const mapped = budgetMap[plannedBudget];
+    if (option) budgetSelect.value = option.value;
+    else if (mapped) budgetSelect.value = mapped;
+    const timeline = document.getElementById('projectTimeline').value;
+    const timing = document.getElementById('timing');
+    timing.value = timeline === 'Lo antes posible' ? 'En las próximas semanas' : timeline === 'En las próximas 4–8 semanas' ? 'En uno o dos meses' : 'Estoy explorando opciones';
+  }
   document.getElementById('service').value = maintenanceOnly ? 'Mantenimiento' : projectType.value === 'store' ? 'Tienda online' : projectType.value === 'automation' ? 'Automatización' : projectType.value === 'custom' ? 'Aplicación o sistema' : 'Diseño web';
 });
 document.getElementById('prepareBrief').addEventListener('click', async () => {
