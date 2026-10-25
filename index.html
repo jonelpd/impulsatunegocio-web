@@ -81,6 +81,17 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 @media(max-width:560px){.nav{min-height:78px;height:auto;padding-top:10px;padding-bottom:10px}.brand{gap:10px;font-size:inherit}.brandmark{width:52px;height:52px;flex-basis:52px}.brand .brand-name{font-size:clamp(1.05rem,4.5vw,1.35rem);letter-spacing:-.045em}.brand .brand-tagline{font-size:.48rem!important;letter-spacing:.055em!important;line-height:1.35!important}.brand-copy{gap:4px}.menu-toggle{font-size:.82rem;padding:9px 10px}.navlinks{top:100%}.brand>span:last-child{overflow-wrap:normal}}
 @media(max-width:370px){.brandmark{width:45px;height:45px;flex-basis:45px}.brand .brand-name{font-size:1.03rem}.brand .brand-tagline{font-size:.43rem!important;letter-spacing:.02em!important}.menu-toggle{padding:8px;font-size:.78rem}}
 .language-switch{display:flex;align-items:center;gap:3px;border:1px solid var(--line);border-radius:999px;padding:4px;background:#edf4ee;flex:0 0 auto}.language-switch a{padding:5px 9px;border-radius:999px;font-size:.76rem;font-weight:850;letter-spacing:.03em;color:#436452}.language-switch a.active,.language-switch a[aria-current="page"]{background:var(--green);color:white}.language-switch a:hover:not(.active){background:#d7e9d9}.language-switch a:focus-visible{outline:3px solid #b17b16}@media(max-width:560px){.nav{gap:7px}.brand{gap:7px}.brandmark{width:46px;height:46px;flex-basis:46px}.brand .brand-name{font-size:clamp(.96rem,3.95vw,1.2rem)}.brand .brand-tagline{font-size:.42rem!important;letter-spacing:.02em!important}.language-switch{padding:2px;gap:0}.language-switch a{padding:5px 6px;font-size:.68rem}.menu-toggle{padding:8px;font-size:.75rem}}@media(max-width:380px){.brandmark{width:40px;height:40px;flex-basis:40px}.brand .brand-name{font-size:.92rem}.brand .brand-tagline{display:none!important}.menu-toggle{font-size:.7rem;padding:7px}}
+
+/* Identidad de marca alineada con la versión inglesa. */
+.brand{gap:15px}
+.brand>img{width:68px;height:68px;flex:0 0 68px;border-radius:16px;object-fit:contain;display:block}
+.brand .brand-name{font-size:clamp(1.3rem,2vw,1.85rem);font-weight:850;line-height:1.06;letter-spacing:-.055em}
+.brand .brand-tag{display:block;font-size:.62rem;font-weight:800;letter-spacing:.12em;color:var(--muted);line-height:1.45}
+.brand-copy{gap:4px}
+@media(max-width:1000px){.brand>img{width:56px;height:56px;flex-basis:56px}.brand .brand-name{font-size:1.4rem}}
+@media(max-width:850px){.brand{gap:12px}}
+@media(max-width:560px){.brand{gap:7px}.brand>img{width:46px;height:46px;flex-basis:46px}.brand .brand-name{font-size:clamp(.96rem,3.95vw,1.2rem)}.brand .brand-tag{font-size:.43rem;letter-spacing:.02em}.brand-copy{gap:4px}}
+@media(max-width:380px){.brand>img{width:40px;height:40px;flex-basis:40px}.brand .brand-name{font-size:.91rem}.brand .brand-tag{display:none}}
 </style>
 </head>
 <body>
@@ -89,7 +100,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 <header class="header">
   <div class="wrap nav">
     <a class="brand" href="#inicio" aria-label="Impulsa tu Negocio Ya — Inicio">
-      <span class="brandmark"><img src="assets/impulsa-tu-negocio-ya-icon.svg" width="64" height="64" alt="" aria-hidden="true"></span><span class="brand-copy"><strong class="brand-name">Impulsa tu <span>Negocio <b>Ya</b></span></strong><span class="brand-tagline">WEB · TECNOLOGÍA · CRECIMIENTO</span></span>
+      <img src="assets/impulsa-tu-negocio-ya-icon.svg" width="68" height="68" alt="" aria-hidden="true"><span class="brand-copy"><strong class="brand-name">Impulsa tu <span>Negocio <b>Ya</b></span></strong><span class="brand-tag">WEB · TECNOLOGÍA · CRECIMIENTO</span></span>
     </a>
     <div class="language-switch" role="group" aria-label="Seleccionar idioma"><a href="index.html" lang="es" hreflang="es" aria-current="page" class="active">ES</a><a href="en.html" lang="en" hreflang="en" aria-label="English version">EN</a></div>
     <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="navLinks" aria-label="Abrir menú">Menú ☰</button>
