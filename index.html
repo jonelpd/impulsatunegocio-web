@@ -440,7 +440,7 @@ function updateEstimate() {
   if (features.value === 'forms') { low += 100; high += 250; }
   if (features.value === 'integrations') { low += 250; high += 700; }
   const selected = [...document.querySelectorAll('.project-feature:checked')].map(el => el.value);
-  const extras = selected.filter(v => ['Reservas o citas','Carrito y pagos'].includes(v) && !(v === 'Reservas o citas' && features.value === 'forms')).length;
+  const extras = selected.filter(v => ['Reservas o citas','Carrito y pagos'].includes(v) && !(v === 'Reservas o citas' && features.value === 'forms') && !(v === 'Carrito y pagos' && projectType.value === 'store')).length;
   low += extras * 100; high += extras * 250;
   if (selected.includes('Catálogo de productos') && !['catalogue','store'].includes(projectType.value)) { low += 100; high += 250; }
   estimatePrice.textContent = `${low.toLocaleString('es-ES')}–${high.toLocaleString('es-ES')} €`;
@@ -468,21 +468,27 @@ Estimación provisional y no vinculante. IVA, dominio, alojamiento, licencias y 
   if (el.matches('input,textarea')) el.addEventListener('input', updateEstimate);
 });
 updateEstimate();
+let maintenanceOnly = false;
 document.querySelectorAll('[data-service]').forEach(link => link.addEventListener('click', () => {
   const service = link.dataset.service;
   if (service === 'Mantenimiento') {
+    maintenanceOnly = true;
     estimateTitle.textContent = 'Mantenimiento y evolución';
     estimatePrice.textContent = 'Desde 25 €/mes';
-    estimateText.textContent = 'Cuota recurrente orientativa para una web existente. El alcance, las actualizaciones, las copias de seguridad, los tiempos de respuesta y las exclusiones deben acordarse por escrito. No es un presupuesto de desarrollo inicial.';
-    currentBrief = 'RESUMEN ORIENTATIVO — MANTENIMIENTO Y EVOLUCIÓN\n\nServicio: mantenimiento recurrente de una web existente.\nPrecio orientativo: desde 25 €/mes.\nAlcance, límites, impuestos y condiciones: pendientes de definir por escrito.\nNo es un presupuesto contractual.';
-    const status = document.getElementById('briefStatus');
-    if (status) status.textContent = 'Mantenimiento es un servicio recurrente y se presupuesta aparte del desarrollo inicial.';
+    estimateText.textContent = 'Servicio recurrente para una web existente; alcance y condiciones sujetos a propuesta.';
+    currentBrief = 'RESUMEN ORIENTATIVO — MANTENIMIENTO Y EVOLUCIÓN\\nServicio: mantenimiento de una web existente.\\nDesde 25 €/mes. Alcance, impuestos y condiciones por confirmar.';
+    document.getElementById('briefStatus').textContent = 'El mantenimiento se presupuesta por separado.';
     return;
   }
+  maintenanceOnly = false;
   const map = {'Web de presentación':'presentation','Web empresarial':'business','Catálogo digital':'catalogue','Tienda online':'store','Automatización de tareas':'automation','Aplicación o desarrollo a medida':'custom'};
   projectType.value = map[service] || 'business';
   updateEstimate();
 }));
+document.querySelectorAll('#planificador select, #planificador input, #planificador textarea').forEach(el => {
+  el.addEventListener('change', () => { maintenanceOnly = false; });
+  el.addEventListener('input', () => { maintenanceOnly = false; });
+});
 document.querySelector('#planificador .journey-link').addEventListener('click', () => {
   const message = document.getElementById('message');
   if (!message.value.trim()) message.value = currentBrief;
@@ -492,8 +498,8 @@ document.querySelector('#planificador .journey-link').addEventListener('click', 
   const budgetSelect = document.getElementById('budget');
   const plannedBudget = document.getElementById('projectBudget').value;
   const option = [...budgetSelect.options].find(o => o.value === plannedBudget || o.text === plannedBudget);
-  if (option) budgetSelect.value = option.value;
-  document.getElementById('service').value = projectType.value === 'store' ? 'Tienda online' : projectType.value === 'automation' ? 'Automatización' : projectType.value === 'custom' ? 'Aplicación o sistema' : 'Diseño web';
+  if (option && !maintenanceOnly) budgetSelect.value = option.value;
+  document.getElementById('service').value = maintenanceOnly ? 'Mantenimiento' : projectType.value === 'store' ? 'Tienda online' : projectType.value === 'automation' ? 'Automatización' : projectType.value === 'custom' ? 'Aplicación o sistema' : 'Diseño web';
 });
 document.getElementById('prepareBrief').addEventListener('click', async () => {
   const status = document.getElementById('briefStatus');
