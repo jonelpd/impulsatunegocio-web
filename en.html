@@ -226,7 +226,7 @@ if (LEAD_BACKEND_ENABLED) {
     try {
       const response = await fetch(LEAD_ENDPOINT, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
         locale:'en',name:d.get('name'),business:d.get('business'),email:d.get('email'),
-        service:d.get('service'),budget:d.get('budget'),timing:d.get('timing'),message:d.get('message'),turnstileToken:token
+        service:d.get('service'),budget:d.get('budget'),timing:d.get('timing'),message:d.get('message'),privacyConsent:document.getElementById('leadPrivacyConsent').checked,turnstileToken:token
       })});
       const result = await response.json();
       if (!response.ok || !result.ok) throw new Error('Submission failed');
