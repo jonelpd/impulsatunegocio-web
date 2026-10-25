@@ -91,14 +91,41 @@ let cachedCustomers=[];let cachedActivities=[];let agendaFilter='pending';const 
 for(const button of document.querySelectorAll('[data-agenda-filter]'))button.addEventListener('click',()=>{agendaFilter=button.dataset.agendaFilter;renderAgenda()});
 function renderCommercialAlerts(){
  const target=$('commercialAlerts');if(!target)return;target.replaceChildren();
- const pendingLeads=(window.crmRecentLeads||[]).filter(l=>l.status==='nuevo'&&!String(l.reference||'').startsWith('TEST-'));
- const quotes=cachedQuotes.filter(q=>q.status==='enviado');
- const activitiesByCustomer=new Set(cachedActivities.filter(a=>!a.done&&a.due_at).map(a=>a.customer_id));
- const urgentQuotes=quotes.filter(q=>q.customer_id&&!activitiesByCustomer.has(q.customer_id));
- const summary=make('p',pendingLeads.length+' solicitudes nuevas · '+urgentQuotes.length+' presupuestos enviados sin seguimiento programado');summary.className='notice';target.append(summary);
- for(const lead of pendingLeads.slice(0,5)){const card=make('article','');card.className='agenda-card';card.append(make('strong','Solicitud pendiente: '+lead.reference),make('p',lead.name+' · '+lead.service));const go=make('button','Abrir solicitud');go.type='button';go.onclick=()=>showView('leads');card.append(go);target.append(card)}
- for(const quote of urgentQuotes.slice(0,5)){const card=make('article','');card.className='agenda-card';card.append(make('strong','Presupuesto sin seguimiento: '+quote.customer_name),make('p',quote.service_description));const go=make('button','Abrir cliente y programar tarea');go.type='button';go.onclick=()=>{const c=cachedCustomers.find(c=>c.id===quote.customer_id);if(c){clientSearch.value=c.name;expandedCustomerIds.add(c.id);renderCustomers();showView('clients')}else showView('quotes')};card.append(go);target.append(card)}
- if(!pendingLeads.length&&!urgentQuotes.length)target.append(make('p','No se han detectado oportunidades sin atender entre los registros cargados.'));
+ const now=Date.now(),day=86400000;
+ const pendingLeads=(window.crmRecentLeads||[]).filter(l=>l.status==='nuevo'&&!String(l.reference||'').startsWith('TEST-')).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
+ const sentQuotes=cachedQuotes.filter(q=>q.status==='enviado');
+ const pendingTasks=new Set(cachedActivities.filter(a=>!a.done&&a.due_at).map(a=>a.customer_id));
+ const unattended=sentQuotes.filter(q=>!q.customer_id||!pendingTasks.has(q.customer_id)).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
+ const oldQuotes=unattended.filter(q=>now-new Date(q.created_at).getTime()>=3*day);
+ const summary=make('p',pendingLeads.length+' solicitudes nuevas · '+unattended.length+' presupuestos sin seguimiento ('+oldQuotes.length+' con 3 días o más)');summary.className='notice';target.append(summary);
+ for(const lead of pendingLeads.slice(0,5)){
+  const days=Math.max(0,Math.floor((now-new Date(lead.created_at).getTime())/day));
+  const priority=days>=2?'Alta':days>=1?'Media':'Normal';
+  const card=make('article','');card.className='agenda-card';card.append(make('strong','Prioridad '+priority+' · '+lead.reference),make('p',lead.name+' · '+lead.service+' · '+days+' días desde recepción'));
+  const go=make('button','Abrir solicitud');go.type='button';go.onclick=()=>showView('leads');card.append(go);target.append(card)
+ }
+ for(const quote of unattended.slice(0,5)){
+  const days=Math.max(0,Math.floor((now-new Date(quote.created_at).getTime())/day));
+  const priority=days>=7?'Alta':days>=3?'Media':'Normal';
+  const card=make('article','');card.className='agenda-card';card.append(make('strong','Prioridad '+priority+' · Presupuesto: '+quote.customer_name),make('p',quote.service_description+' · '+days+' días desde creación (fecha de envío no registrada)'));
+  const c=cachedCustomers.find(c=>c.id===quote.customer_id);
+  if(c){
+   const schedule=make('button','Programar seguimiento sugerido');schedule.type='button';
+   schedule.onclick=async()=>{
+    if(!active)return;
+    const suggested=new Date();suggested.setDate(suggested.getDate()+2);suggested.setHours(10,0,0,0);
+    if(!window.confirm('¿Crear recordatorio para '+c.name+' el '+suggested.toLocaleString('es-ES')+'? No se enviará ningún correo.'))return;
+    schedule.disabled=true;
+    const {data,error}=await client.from('crm_activities').insert({customer_id:c.id,kind:'tarea',body:'Seguimiento de presupuesto enviado: '+quote.service_description.slice(0,150),due_at:suggested.toISOString()}).select('id');
+    if(error||!data?.length){schedule.disabled=false;$('customerStatus').textContent='No se pudo programar el seguimiento.';return}
+    await loadActivities();showView('agenda');
+   };card.append(schedule)
+  }else{
+   const go=make('button','Revisar presupuesto y vincular cliente');go.type='button';go.onclick=()=>showView('quotes');card.append(go)
+  }
+  target.append(card)
+ }
+ if(!pendingLeads.length&&!unattended.length)target.append(make('p','No se han detectado oportunidades sin atender entre los registros cargados.'));
 }
 function renderDashboardTasks(){const now=new Date(),today=localDay(now);const pending=cachedActivities.filter(a=>!a.done&&a.due_at);const overdue=pending.filter(a=>new Date(a.due_at)<now);const todays=pending.filter(a=>localDay(new Date(a.due_at))===today);setKpi('kpiOverdue',overdue.length);setKpi('kpiToday',todays.length);const list=$('dashboardTasks');list.replaceChildren();const priorities=pending.filter(a=>new Date(a.due_at)<now||localDay(new Date(a.due_at))===today).sort((a,b)=>new Date(a.due_at)-new Date(b.due_at)).slice(0,5);if(!priorities.length){list.append(make('p','No hay seguimientos vencidos ni programados para hoy.'));return}for(const a of priorities){const c=cachedCustomers.find(c=>c.id===a.customer_id);const card=make('article','');card.className='agenda-card';card.append(make('strong',c?.name||'Cliente'),make('p',a.body),make('p','Fecha: '+new Date(a.due_at).toLocaleString('es-ES')));const go=make('button','Abrir agenda');go.type='button';go.onclick=()=>{agendaFilter='pending';renderAgenda();showView('agenda')};card.append(go);list.append(card)}}
 function renderAgenda(){const now=new Date(),today=localDay(now);const entries=cachedActivities.filter(a=>a.due_at).filter(a=>{const date=new Date(a.due_at);if(agendaFilter==='pending')return !a.done;if(agendaFilter==='overdue')return !a.done&&date<now;if(agendaFilter==='today')return !a.done&&date.toLocaleDateString('en-CA')===today;return true}).sort((a,b)=>new Date(a.due_at)-new Date(b.due_at));for(const button of document.querySelectorAll('[data-agenda-filter]'))button.setAttribute('aria-pressed',String(button.dataset.agendaFilter===agendaFilter));$('agendaCount').textContent=entries.length+' seguimientos'+(cachedActivities.length===500?' · mostrando un máximo de 500 actividades recientes':'');const list=$('agendaList');list.replaceChildren();if(!entries.length){list.append(make('p','No hay seguimientos para este filtro.'));return}for(const a of entries){const c=cachedCustomers.find(c=>c.id===a.customer_id);const card=document.createElement('article');card.className='agenda-card';card.append(make('h3',c?.name||'Cliente no incluido entre los 100 recientes'));const date=make('p',new Date(a.due_at).toLocaleString('es-ES')+(a.done?' · Completado':''));date.className='agenda-date'+(!a.done&&new Date(a.due_at)<now?' overdue':'');card.append(date,make('p',a.kind.toUpperCase()+' · '+a.body));if(c){const open=make('button','Ver cliente');open.type='button';open.onclick=()=>{clientSearch.value=c.name;renderCustomers();showView('clients')};card.append(open)}if(!a.done){const done=make('button','Marcar completada');done.type='button';done.style.marginLeft='8px';done.onclick=async()=>{done.disabled=true;const {data,error}=await client.from('crm_activities').update({done:true}).eq('id',a.id).select('id');if(error||!data?.length){done.disabled=false;$('agendaCount').textContent='No se pudo completar la actividad.';return}await loadActivities()};card.append(done)}list.append(card)}}
