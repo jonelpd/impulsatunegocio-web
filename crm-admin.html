@@ -55,14 +55,14 @@ removeLead.className='danger-action';
 removeLead.setAttribute('aria-label','Eliminar solicitud '+lead.reference+' de '+lead.name);
 removeLead.onclick=async()=>{
  if(!active)return;
- const confirmed=window.confirm('¿Eliminar DEFINITIVAMENTE la solicitud '+lead.reference+' de '+lead.name+' ('+lead.email+')? Esta acción no se puede deshacer.');
+ const confirmed=window.confirm((new URLSearchParams(location.search).get('lang')==='en'?'Permanently DELETE enquiry ':'¿Eliminar DEFINITIVAMENTE la solicitud ')+lead.reference+(new URLSearchParams(location.search).get('lang')==='en'?' from ':' de ')+lead.name+' ('+lead.email+')? '+(new URLSearchParams(location.search).get('lang')==='en'?'This action cannot be undone.':'Esta acción no se puede deshacer.'));
  if(!confirmed)return;
  removeLead.disabled=true;
  $('appStatus').textContent='Eliminando solicitud '+lead.reference+'…';
  try{
   const {data:deleted,error:deleteError}=await client.from('leads').delete().eq('id',lead.id).select('id');
   if(deleteError)throw deleteError;
-  if(!deleted?.length)throw Error('La eliminación no fue confirmada. Revisa los permisos.');
+  if(!deleted?.length)throw Error((new URLSearchParams(location.search).get('lang')==='en'?'Deletion was not confirmed. Check your permissions.':'La eliminación no fue confirmada. Revisa los permisos.'));
   await refresh();
   $('appStatus').textContent='Solicitud '+lead.reference+' eliminada correctamente.';
  }catch(err){
