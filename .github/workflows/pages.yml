@@ -76,7 +76,7 @@ jobs:
               for item in set(parser.ids):
                   if parser.ids.count(item)>1: errors.append(f'{file}: id duplicado {item}')
               for n,script in enumerate(parser.inline):
-                  result=subprocess.run(['node','--check','-'],input=script,text=True,capture_output=True)
+                  result=subprocess.run(['node','--input-type=module','--check','-'],input=script,text=True,capture_output=True)
                   if result.returncode: errors.append(f'{file}: JavaScript {n+1}: {result.stderr}')
           if errors: raise SystemExit('\\n'.join(errors))
           print('Estructura HTML y JavaScript sin errores detectados')
