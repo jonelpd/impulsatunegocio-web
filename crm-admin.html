@@ -150,9 +150,65 @@ await refresh();
 // The CRM uses one database and one page for both public-site languages.
 const crmLanguage=new URLSearchParams(location.search).get('lang')==='en'?'en':'es';
 if(crmLanguage==='en'){
- document.documentElement.lang='en';document.title='Private CRM | Impulsa tu Negocio Ya';document.getElementById('email').placeholder='you@example.com';
+ document.documentElement.lang='en';document.title='Private CRM | Impulsa tu Negocio Ya';document.getElementById('email').placeholder='you@example.com';document.documentElement.setAttribute('data-crm-language','en');
  const dictionary={"Impulsa tu Negocio Ya · CRM privado":"Impulsa tu Negocio Ya · Private CRM","Acceso del administrador":"Administrator sign in","Solo cuentas creadas y autorizadas por el responsable. No hay registro público.":"Authorized accounts only. Public registration is not available.","Correo electrónico":"Email address","Contraseña":"Password","Entrar de forma segura":"Sign in securely","Panel de gestión":"Management dashboard","Actualizar datos":"Refresh data","Cerrar sesión":"Sign out","Inicio":"Home","Solicitudes":"Enquiries","Clientes":"Clients","Presupuestos":"Quotes","Agenda":"Follow-ups","Resumen comercial":"Sales overview","Vista general de la actividad registrada en el CRM.":"Overview of activity recorded in the CRM.","Solicitudes nuevas":"New enquiries","Presupuestos pendientes":"Pending quotes","Presupuestos aceptados":"Accepted quotes","Oportunidades que necesitan atención":"Opportunities requiring attention","Seguimientos prioritarios":"Priority follow-ups","Vencidos":"Overdue","Para hoy":"Due today","Ver solicitudes":"View enquiries","Ver clientes":"View clients","Ver presupuestos":"View quotes","Ver agenda":"View follow-ups","Agenda comercial":"Sales follow-up calendar","Pendientes":"Pending","Hoy":"Today","Todos con fecha":"All dated","Solicitudes recibidas":"Received enquiries","Editar ficha de cliente":"Edit client record","Nombre":"Name","Empresa":"Business","Correo":"Email","Teléfono":"Phone","Notas":"Notes","Guardar cambios":"Save changes","Cancelar edición":"Cancel editing","Buscar clientes":"Search clients","Limpiar búsqueda":"Clear search","Presupuestos internos":"Internal quotes","Vincular a ficha de cliente":"Link to client record","Sin vincular":"Unlinked","Cliente o referencia":"Client or reference","Servicio y alcance":"Service and scope","Importe base (€)":"Base amount (€)","Descuento (%)":"Discount (%)","IVA orientativo (%)":"Indicative VAT (%)","Conceptos detallados (opcional)":"Itemized services (optional)","Añadir concepto":"Add item","Notas internas":"Internal notes","Guardar presupuesto":"Save quote","Nuevo presupuesto":"New quote","Quitar":"Remove","Recepción automática conectada. Pendiente completar la documentación legal antes de promocionar el servicio. Las alertas aparecen al abrir o actualizar el CRM.":"Automatic enquiry intake configured. Complete the legal documents before promoting the service. Alerts update when you open or refresh the CRM.","Comprobando solicitudes…":"Checking enquiries…","No hay solicitudes reales nuevas pendientes.":"No new real enquiries pending.","No hay seguimientos vencidos ni programados para hoy.":"No overdue or today follow-ups.","No hay seguimientos para este filtro.":"No follow-ups for this filter.","No se han detectado oportunidades sin atender entre los registros cargados.":"No unattended opportunities were found among the loaded records.","Estado comercial":"Sales status","Abrir solicitud":"Open enquiry","Programar seguimiento sugerido":"Schedule suggested follow-up","Abrir agenda":"Open calendar","Ver cliente":"View client","Marcar completada":"Mark complete","Editar presupuesto":"Edit quote","Descargar PDF borrador":"Download draft PDF","Eliminar presupuesto":"Delete quote","Sin datos adicionales":"No additional details","Ver ficha":"View record","Ocultar ficha":"Hide record","Guardar actividad":"Save activity","Nota":"Note","Llamada":"Call","Reunión":"Meeting","Tarea":"Task","Sin indicar":"Not provided","Sin empresa":"No business","Sin presupuesto":"No budget","Sin definir":"Not specified","Nuevo":"New","Contactado":"Contacted","En negociación":"In negotiation","Ganado":"Won","Perdido":"Lost"};
  Object.assign(dictionary,{"Cuenta sin autorización de administrador. Solicita la habilitación al responsable.":"Account is not authorized as an administrator. Ask the owner to grant access.","Cargando solicitudes…":"Loading enquiries…","No se han podido cargar las solicitudes. Revisa permisos y conexión.":"Could not load enquiries. Check permissions and connection.","No se pudo guardar el cambio.":"Could not save the change.","Estado actualizado.":"Status updated.","Comprobando la ficha del cliente…":"Checking client record…","Conversión cancelada.":"Conversion cancelled.","No se pudo programar el seguimiento.":"Could not schedule the follow-up.","No se pudo completar la actividad.":"Could not complete the activity.","Guardando actividad…":"Saving activity…","No se han podido cargar los presupuestos.":"Could not load quotes.","Actividad completada.":"Activity completed.","Guardar presupuesto":"Save quote","No se pudo cargar el historial de actividades.":"Could not load activity history.","Error al cargar clientes.":"Error loading clients.","Selecciona una ficha existente para editarla.":"Select an existing client record to edit.","Guardando cambios…":"Saving changes…","Ficha actualizada correctamente.":"Client record updated successfully.","Actualizar presupuesto":"Update quote","Generando PDF…":"Generating PDF…","PDF generado. Comprueba la carpeta de descargas.":"PDF generated. Check your downloads folder.","Eliminando presupuesto…":"Deleting quote…","Presupuesto eliminado correctamente.":"Quote deleted successfully.","Revisa los conceptos.":"Check the line items.","Comprobando acceso…":"Checking access…","No se ha podido iniciar sesión. Comprueba tus credenciales.":"Could not sign in. Check your credentials.","Sesión cerrada.":"Signed out.","Presupuesto enviado":"Quote sent","Aceptado":"Accepted","Cerrado":"Closed","Borrador":"Draft","Sin actividades registradas.":"No activities recorded.","No hay clientes registrados.":"No clients recorded.","No hay presupuestos registrados.":"No quotes recorded.","No hay solicitudes registradas.":"No enquiries recorded.","No hay datos para mostrar.":"No data to display."});
+ Object.assign(dictionary,{
+ "Solicitudes reales nuevas sin actividad registrada y presupuestos enviados sin seguimiento. Se muestran los datos cargados en el CRM.":"New real enquiries without recorded activity and sent quotes without follow-up. Only loaded CRM records are shown.",
+ "Los indicadores reflejan los registros cargados; solicitudes: máximo 100 recientes, clientes: 100, presupuestos: 50.":"Figures reflect loaded records: up to 100 recent enquiries, 100 clients and 50 quotes.",
+ "Seguimientos de clientes ordenados por fecha. Las fechas vencidas aparecen destacadas.":"Client follow-ups sorted by date. Overdue dates are highlighted.",
+ "Las fichas se crean a partir de las solicitudes recibidas desde la web. Aquí puedes consultar y actualizar sus datos.":"Client records are created from website enquiries. View and update them here.",
+ "Borradores de trabajo. No constituyen ofertas comerciales hasta completar los datos legales.":"Working drafts. They are not commercial offers until legal details are completed.",
+ "Nombre, empresa, correo o teléfono":"Name, business, email or phone",
+ "Nombre del cliente":"Client name",
+ "Descripción del trabajo":"Description of work",
+ "Observaciones internas":"Internal remarks",
+ "Administrador":"Administrator",
+ "Servicio:":"Service:",
+ "Plazo:":"Timeframe:",
+ "Estado comercial":"Sales status",
+ "✉ Responder por correo":"✉ Reply by email",
+ "Convertir en cliente":"Convert to client",
+ "Sin empresa":"No business",
+ "Sin presupuesto":"No budget",
+ "Sin definir":"Not specified",
+ "Posible duplicado:":"Possible duplicate:",
+ "solicitudes recientes con este correo. Revisa antes de convertir.":"recent enquiries with this email. Check before converting.",
+ "Comprobando la ficha del cliente…":"Checking client record…",
+ "La solicitud no contiene correo; revisa los datos antes de crear la ficha.":"The enquiry has no email; check its details before creating a client record.",
+ "Ficha creada desde":"Client record created from",
+ "Ya aparece en Clientes.":"It now appears in Clients.",
+ "No se pudo convertir la solicitud:":"Could not convert the enquiry:",
+ "Error desconocido":"Unknown error",
+ "solicitudes · máximo 100 recientes":"enquiries · up to 100 recent",
+ "solicitud(es) pendiente(s) de atención.":"enquiry/enquiries awaiting attention.",
+ "solicitud(es) nueva(s) desde la última actualización. Abre Solicitudes para responder.":"new enquiry/enquiries since the last refresh. Open Enquiries to respond.",
+ "Cargando solicitudes…":"Loading enquiries…",
+ "✉ Preparar correo":"✉ Prepare email",
+ "Actividad":"Activity",
+ "Fecha":"Date",
+ "Estado":"Status",
+ "Acciones":"Actions",
+ "Detalles":"Details",
+ "Editar":"Edit",
+ "Eliminar":"Delete",
+ "Completada":"Completed",
+ "Programada":"Scheduled",
+ "Guardar":"Save",
+ "Sin fecha":"No date",
+ "Pendiente":"Pending",
+ "Seguimiento":"Follow-up",
+ "Descripción":"Description",
+ "Importe":"Amount",
+ "Total":"Total",
+ "IVA":"VAT",
+ "Descuento":"Discount",
+ "Buscar":"Search",
+ "Teléfono":"Phone",
+ "Nombre":"Name",
+ "Correo":"Email",
+ "Empresa":"Business"
+ });
  const prefixes=[['Prioridad Alta','High priority'],['Prioridad Media','Medium priority'],['Prioridad Normal','Normal priority'],['Solicitud pendiente:','Pending enquiry:'],['Presupuesto sin seguimiento:','Quote without follow-up:'],['Ya existe una ficha con ese correo: ','A record already exists for this email: '],['Ficha creada desde ','Record created from '],['No se pudo convertir la solicitud: ','Could not convert enquiry: '],['Actividad guardada para ','Activity saved for '],['No se pudo guardar: ','Could not save: '],['Editando ficha: ','Editing record: '],['No se pudieron guardar los cambios: ','Could not save changes: '],['No se pudo generar el PDF: ','Could not generate PDF: '],['No se pudo eliminar el presupuesto: ','Could not delete quote: ']];
  function translateText(value){const trimmed=value.trim();if(!trimmed)return value;let translated=dictionary[trimmed];if(!translated){for(const [es,en] of prefixes)if(trimmed.startsWith(es)){translated=en+trimmed.slice(es.length);break}}return translated?value.replace(trimmed,translated):value}
  function translateBranch(root){
@@ -163,7 +219,10 @@ if(crmLanguage==='en'){
   for(const child of root.childNodes)translateBranch(child)
  }
  translateBranch(document.body);
- const observer=new MutationObserver(records=>{for(const record of records){if(record.type==='characterData')translateBranch(record.target);else for(const node of record.addedNodes)translateBranch(node)}});
- observer.observe(document.body,{childList:true,subtree:true,characterData:true});
+ const observer=new MutationObserver(records=>{for(const record of records){if(record.type==='characterData')translateBranch(record.target);else if(record.type==='attributes')translateBranch(record.target);else for(const node of record.addedNodes)translateBranch(node)}});
+ observer.observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['placeholder','title','aria-label']});
+ const languageNav=document.querySelector('header nav[aria-label="CRM language"]');
+ if(languageNav){languageNav.setAttribute('aria-label','CRM language / Idioma del CRM');for(const link of languageNav.querySelectorAll('a')){if(link.getAttribute('href')?.endsWith('lang=en'))link.setAttribute('aria-current','page');}}
+
 }
 </script></body></html>
