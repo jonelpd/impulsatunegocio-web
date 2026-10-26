@@ -28,5 +28,44 @@ Deno.serve(async req => {
       sent++;
     }catch(e){await db.from('lead_email_outbox').update({last_error:String(e instanceof Error?e.message:'SMTP failure').slice(0,200),claim_token:null,claimed_until:null}).eq('lead_id',item.lead_id).eq('claim_token',claimToken);failed++;}
   }
-  return Response.json({processed:(pending||[]).length,sent,failed});
+  // Independent customer acknowledgement queue: failures never block staff notifications.
+  const {data:ackPending,error:ackError}=await db.from('lead_ack_outbox')
+    .select('lead_id,attempts').is('sent_at',null).lt('attempts',5)
+    .or('claimed_until.is.null,claimed_until.lt.'+new Date().toISOString())
+    .order('created_at').limit(10);
+  let acknowledged=0,ackFailed=0;
+  if(ackError)console.error('Acknowledgement queue unavailable',ackError.code);
+  for(const item of ackPending||[]){
+    const claimToken=crypto.randomUUID();
+    const {data:claimed,error:claimError}=await db.from('lead_ack_outbox')
+      .update({attempts:item.attempts+1,last_error:null,claim_token:claimToken,claimed_until:new Date(Date.now()+180000).toISOString()})
+      .eq('lead_id',item.lead_id).eq('attempts',item.attempts).is('sent_at',null)
+      .or('claimed_until.is.null,claimed_until.lt.'+new Date().toISOString()).select('lead_id').maybeSingle();
+    if(claimError||!claimed)continue;
+    const {data:lead}=await db.from('leads').select('reference,name,email,locale').eq('id',item.lead_id).maybeSingle();
+    if(!lead||!lead.email){
+      await db.from('lead_ack_outbox').update({last_error:'Lead unavailable',claim_token:null,claimed_until:null})
+        .eq('lead_id',item.lead_id).eq('claim_token',claimToken);
+      ackFailed++;continue;
+    }
+    const english=lead.locale==='en';
+    const firstName=String(lead.name||'').trim().split(/\s+/)[0].slice(0,60);
+    const subject=english?'We received your enquiry | Impulsa tu Negocio Ya':'Hemos recibido tu solicitud | Impulsa tu Negocio Ya';
+    const body=english
+      ? ['Hello '+firstName+',','','Thank you for contacting Impulsa tu Negocio Ya.','We have received your enquiry successfully. Our team will review it and get back to you as soon as possible.','','Your reference: '+lead.reference,'','There is no need to submit another enquiry. You can reply to this email if you would like to add information.','','Kind regards,','Impulsa tu Negocio Ya','Digital solutions for businesses']
+      : ['Hola '+firstName+',','','Gracias por contactar con Impulsa tu Negocio Ya.','Hemos recibido correctamente tu solicitud. Nuestro equipo la revisará y te responderá lo antes posible.','','Tu referencia: '+lead.reference,'','No necesitas enviar otra solicitud. Puedes responder a este correo si deseas añadir información.','','Un saludo,','Impulsa tu Negocio Ya','Soluciones digitales para negocios'];
+    try{
+      await smtp.sendMail({from:user,to:lead.email,replyTo:user,subject,text:body.join('\\n')});
+      const {error:markError}=await db.from('lead_ack_outbox')
+        .update({sent_at:new Date().toISOString(),last_error:null,claim_token:null,claimed_until:null})
+        .eq('lead_id',item.lead_id).eq('claim_token',claimToken).is('sent_at',null);
+      if(markError)console.error('Acknowledgement sent but mark failed',markError.code);
+      acknowledged++;
+    }catch(e){
+      await db.from('lead_ack_outbox').update({last_error:String(e instanceof Error?e.message:'SMTP failure').slice(0,200),claim_token:null,claimed_until:null})
+        .eq('lead_id',item.lead_id).eq('claim_token',claimToken);
+      ackFailed++;
+    }
+  }
+  return Response.json({processed:(pending||[]).length,sent,failed,acknowledged,ackFailed});
 });
