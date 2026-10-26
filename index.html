@@ -147,6 +147,41 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 #planificador .project-feature-grid label{display:flex;gap:8px;align-items:center;border:1px solid #dce5de;border-radius:10px;padding:10px;font-weight:500}
 #planificador .project-feature-grid input{accent-color:#176b4d}
 @media(max-width:560px){#planificador .project-feature-grid{grid-template-columns:1fr}}
+
+/* Visual parity audit 2026-10: shared resilient layout, keyboard and mobile rules. */
+html{scroll-padding-top:110px}
+body{overflow-x:clip}
+img,svg,video,canvas{max-width:100%}
+img{height:auto}
+button,input,select,textarea{max-width:100%}
+:where(.hero-grid,.grid,.cards,.pricing-grid,.pricing,.portfolio,.contact-grid,.diagnostic-layout,.planner,.planner-fields,.split,.service-detail-grid)>*{min-width:0}
+:where(h1,h2,h3,p,.brand-name,.card,.service-detail,.price-card,.project){overflow-wrap:break-word}
+:where(.button,.text-link,.textlink,.journey-link){max-width:100%;white-space:normal;text-align:center}
+:where(a,button,input,select,textarea):focus-visible{outline:3px solid #7baf22;outline-offset:3px}
+.header .nav{min-height:104px;height:auto;padding-block:14px;gap:16px}
+.header .brand{min-width:0;gap:12px}
+.header .brand>img{width:68px;height:68px;flex:0 0 68px;object-fit:contain}
+.header .brand-copy{min-width:0}
+.header .brand-name{font-size:clamp(1.3rem,2vw,1.85rem);line-height:1.06;letter-spacing:-.055em}
+.header .brand-tag{font-size:.62rem;letter-spacing:.12em;line-height:1.45}
+.header .language-switch{flex:none}
+.header .menu-toggle{min-height:40px}
+.hero{background:radial-gradient(circle at 88% 12%,rgba(201,243,106,.15),transparent 36%),linear-gradient(180deg,#fbfdf9 0%,var(--paper) 100%)}
+.hero-grid{gap:clamp(28px,4.5vw,60px)}
+.hero .lead{line-height:1.7;max-width:570px}
+.hero-actions .button{min-height:50px}
+.hero .visual{border-radius:32px;box-shadow:0 24px 65px rgba(14,43,34,.16)}
+:where(.card,.service-detail,.price-card){transition:box-shadow .2s ease,border-color .2s ease}
+:where(.card,.service-detail,.price-card):hover{border-color:#a7c7b2;box-shadow:0 15px 36px rgba(14,43,34,.08)}
+:where(.contact-form,.planner,.diagnostic-card,.panel) input:not([type="checkbox"]):not([type="radio"]),:where(.contact-form,.planner,.diagnostic-card,.panel) select,:where(.contact-form,.planner,.diagnostic-card,.panel) textarea{min-width:0}
+.footer-links{display:flex;flex-wrap:wrap;gap:12px 20px}
+.footer-links a{min-height:28px;display:inline-flex;align-items:center}
+.footer-links a:hover{text-decoration:underline}
+@media(max-width:1000px){.header .nav{min-height:88px}.header .brand>img{width:56px;height:56px;flex-basis:56px}.header .brand-name{font-size:1.4rem}}
+@media(max-width:850px){.header .nav{min-height:78px;padding-block:10px;gap:10px}.hero-grid{gap:28px}.hero .visual{width:100%;max-width:600px;margin-inline:auto}.section{padding-block:58px}}
+@media(max-width:560px){.wrap,.footer .wrap{width:calc(100% - 32px)}.header .nav{gap:7px}.header .brand{gap:7px}.header .brand>img{width:46px;height:46px;flex-basis:46px}.header .brand-name{font-size:clamp(.96rem,3.95vw,1.2rem)}.header .brand-tag{font-size:.43rem;letter-spacing:.02em}.header .language-switch a{padding:5px 6px;font-size:.68rem}.header .menu-toggle{padding:8px;font-size:.75rem}.hero{padding-top:36px}.hero .visual{border-radius:23px}.hero-actions .button{min-height:49px}.section{padding-block:48px}.footer-links{gap:9px 14px}}
+@media(max-width:380px){.header .brand>img{width:40px;height:40px;flex-basis:40px}.header .brand-name{font-size:.91rem}.header .brand-tag{display:none}.header .menu-toggle{font-size:.7rem;padding:7px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}:where(.card,.service-detail,.price-card,.button){transition:none!important}}
 </style>
 </head>
 <body>
