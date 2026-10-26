@@ -182,6 +182,14 @@ button,input,select,textarea{max-width:100%}
 @media(max-width:560px){.wrap,.footer .wrap{width:calc(100% - 32px)}.header .nav{gap:7px}.header .brand{gap:7px}.header .brand>img{width:46px;height:46px;flex-basis:46px}.header .brand-name{font-size:clamp(.96rem,3.95vw,1.2rem)}.header .brand-tag{font-size:.43rem;letter-spacing:.02em}.header .language-switch a{padding:5px 6px;font-size:.68rem}.header .menu-toggle{padding:8px;font-size:.75rem}.hero{padding-top:36px}.hero .visual{border-radius:23px}.hero-actions .button{min-height:49px}.section{padding-block:48px}.footer-links{gap:9px 14px}}
 @media(max-width:380px){.header .brand>img{width:40px;height:40px;flex-basis:40px}.header .brand-name{font-size:.91rem}.header .brand-tag{display:none}.header .menu-toggle{font-size:.7rem;padding:7px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}:where(.card,.service-detail,.price-card,.button){transition:none!important}}
+
+/* Bilingual footer consistency and small-screen link accessibility */
+.footer .footer-links{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px}
+.footer .footer-links a{display:inline-flex;align-items:center;min-height:36px;padding:3px 0;text-underline-offset:4px}
+.footer .footer-links a:focus-visible{outline:3px solid #c9f36a;outline-offset:4px}
+.footer .brand{display:inline-flex;align-items:center;max-width:100%}
+.footer .brand img{width:38px;height:38px;object-fit:contain;flex:none}
+@media(max-width:560px){.footer .footer-links{gap:6px 14px}.footer .footer-links a{min-height:40px}}
 </style>
 </head>
 <body>
@@ -356,7 +364,7 @@ button,input,select,textarea{max-width:100%}
 <section class="section white" id="cookies"><div class="wrap"><span class="eyebrow">Revisión pendiente</span><h2>Cookies y tecnologías similares — borrador</h2><p>No se han incorporado deliberadamente herramientas publicitarias o de analítica en este prototipo. Cloudflare Turnstile se utiliza como protección antispam del formulario conectado. Se deben comprobar las cookies y tecnologías efectivamente utilizadas, sus finalidades, la información exigible y si procede solicitar consentimiento conforme a la normativa y a los criterios de la AEPD.</p><p><strong>Pendiente:</strong> inventario técnico final de cookies, proveedores, duración y configuración de consentimiento si fuera necesaria.</p></div></section>
 
 </main>
-<footer class="footer"><div class="wrap footer-inner"><div><a class="brand" href="#inicio"><span class="brandmark" style="background:transparent"><img src="assets/impulsa-tu-negocio-ya-icon.svg" width="38" height="38" alt="" aria-hidden="true"></span><span style="color:white">Impulsa tu Negocio Ya<span style="color:#b7cfc1">Web · Tecnología · Crecimiento</span></span></a><p>Versión 12.0 · Prototipo de trabajo; borradores legales pendientes de completar.</p></div><div class="footer-links"><a href="#servicios">Servicios</a><a href="#metodo">Método</a><a href="#precios">Precios</a><a href="#planificador">Presupuesto</a><a href="#diagnostico">Diagnóstico</a><a href="#proyectos">Proyectos</a><a href="#preguntas">Preguntas</a><a href="#contacto">Contacto</a><a href="#aviso-legal">Aviso legal (borrador)</a><a href="#privacidad">Privacidad (borrador)</a><a href="#cookies">Cookies</a><a href="crm-admin.html" rel="nofollow" aria-label="Acceso profesional — CRM privado">Acceso profesional</a></div></div></footer>
+<footer class="footer"><div class="wrap footer-inner"><div><a class="brand" href="#inicio"><span class="brandmark" style="background:transparent"><img src="assets/impulsa-tu-negocio-ya-icon.svg" width="38" height="38" alt="" aria-hidden="true"></span><span style="color:white">Impulsa tu Negocio Ya<span style="color:#b7cfc1">Web · Tecnología · Crecimiento</span></span></a><p>Prototipo de trabajo · Borradores legales pendientes de completar.</p></div><div class="footer-links"><a href="#servicios">Servicios</a><a href="#metodo">Método</a><a href="#precios">Precios</a><a href="#planificador">Presupuesto</a><a href="#diagnostico">Diagnóstico</a><a href="#proyectos">Proyectos</a><a href="#preguntas">Preguntas</a><a href="#contacto">Contacto</a><a href="#aviso-legal">Aviso legal (borrador)</a><a href="#privacidad">Privacidad (borrador)</a><a href="#cookies">Cookies</a><a href="en.html" lang="en" hreflang="en">English</a><a href="crm-admin.html?lang=es" rel="nofollow" aria-label="Acceso profesional — CRM privado">Acceso profesional</a></div></div></footer>
 <script>
 
 const diagnosticForm = document.getElementById('diagnosticForm');
