@@ -72,13 +72,41 @@
 .journey-note{margin:20px 0 12px;line-height:1.6;font-size:.91rem}
 .journey-link{min-height:47px;max-width:100%;white-space:normal}
 @media(max-width:560px){.journey-link{width:100%;text-align:center}}
-.planner-feature-field{border:1px solid var(--line);border-radius:12px;padding:12px;margin:10px 0}.planner-feature-field legend{font-weight:700;padding:0 6px}.project-feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.project-feature-grid label{display:flex;align-items:center;gap:8px;padding:8px;border:1px solid var(--line);border-radius:10px;font-size:.9rem}.project-feature-grid input{accent-color:var(--green)}@media(max-width:560px){.project-feature-grid{grid-template-columns:1fr}} </style>
+.planner-feature-field{border:1px solid var(--line);border-radius:12px;padding:12px;margin:10px 0}.planner-feature-field legend{font-weight:700;padding:0 6px}.project-feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.project-feature-grid label{display:flex;align-items:center;gap:8px;padding:8px;border:1px solid var(--line);border-radius:10px;font-size:.9rem}.project-feature-grid input{accent-color:var(--green)}@media(max-width:560px){.project-feature-grid{grid-template-columns:1fr}} \n/* Shared bilingual visual system: aligned with the Spanish brand and responsive navigation. */
+:root{--ink:#122b24;--white:#fff;--radius:22px;--shadow:0 16px 50px rgba(13,48,35,.09)}
+html{scroll-padding-top:90px}
+body{color:var(--ink);line-height:1.6}
+.wrap{width:min(1160px,calc(100% - 40px))}
+.header{background:rgba(247,248,244,.94);backdrop-filter:blur(12px);box-shadow:none;border-bottom:1px solid rgba(220,229,222,.8)}
+.nav{min-height:104px;gap:22px;padding:14px 0}
+.navlinks{gap:18px;font-size:.88rem}
+.brand{gap:10px}
+.button{transition:transform .18s,background .18s}
+.button:hover{transform:translateY(-2px)}
+.hero{padding:82px 0 72px}
+.hero-grid{gap:60px}
+.visual{min-height:420px;border-radius:32px;box-shadow:var(--shadow)}
+.section{padding:80px 0}
+.card{border-radius:22px;box-shadow:0 8px 28px rgba(13,48,35,.035)}
+.card:focus-within{border-color:#9abb9f}
+.footer .wrap{width:min(1160px,calc(100% - 40px))}
+.footer .brand{display:inline-flex;gap:10px}
+.footer .brand img{width:38px;height:38px;border-radius:10px}
+.footer .brand-name{font-size:1.05rem;letter-spacing:-.03em}
+.footer .brand-tag{font-size:.65rem}
+.footer-links a:hover{text-decoration:underline}
+:focus-visible{outline:3px solid #7baf22;outline-offset:3px}
+@media(max-width:1000px){.nav{min-height:88px}.navlinks{gap:12px}}
+@media(max-width:850px){.nav{min-height:78px;gap:10px;padding:10px 0}.hero-grid{gap:28px}.hero{padding:58px 0}.visual{min-height:320px}.section{padding:58px 0}}
+@media(max-width:560px){.wrap,.footer .wrap{width:calc(100% - 32px)}.nav{gap:7px}.hero{padding:42px 0}.section{padding:48px 0}.visual{min-height:290px}.card{padding:20px}.footer-links{gap:12px}.footer .brand-name{font-size:.95rem}}
+@media(prefers-reduced-motion:reduce){.button{transition:none}.button:hover{transform:none}}
+</style>
 </head>
 <body>
 <a class="skip" href="#home">Skip to content</a>
 <div class="notice">We are building a practical way to help small businesses grow online.</div>
 <header class="header"><div class="wrap nav">
-<a class="brand" href="#home" aria-label="Impulsa tu Negocio Ya — Home"><img src="assets/impulsa-tu-negocio-ya-icon.svg" width="68" height="68" alt=""><span class="brand-copy"><strong class="brand-name">Impulsa tu <span>Negocio <b>Ya</b></span></strong><span class="brand-tag">WEB · TECHNOLOGY · GROWTH</span></span></a>
+<a class="brand" href="#home" aria-label="Impulsa tu Negocio Ya — Home"><img src="assets/impulsa-tu-negocio-ya-icon.svg" width="68" height="68" alt="" aria-hidden="true"><span class="brand-copy"><strong class="brand-name">Impulsa tu <span>Negocio <b>Ya</b></span></strong><span class="brand-tag">WEB · TECHNOLOGY · GROWTH</span></span></a>
 <div class="language-switch" role="group" aria-label="Choose language"><a href="index.html" lang="es" hreflang="es">ES</a><a href="en.html" lang="en" hreflang="en" aria-current="page" class="active">EN</a></div>
 <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="navLinks" aria-label="Open menu">Menu ☰</button>
 <nav class="navlinks" id="navLinks" aria-label="Main navigation"><a href="#services">Services</a><a href="#pricing">Pricing</a><a href="#diagnostic">Assessment</a><a href="#process">Our process</a><a href="#projects">Projects</a><a class="button" href="#planner">Get an estimate ↗</a></nav>
