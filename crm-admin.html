@@ -162,7 +162,7 @@ if(crmLanguage==='en'){
   for(const child of root.childNodes)translateBranch(child)
  }
  translateBranch(document.body);
- const observer=new MutationObserver(records=>{for(const record of records)for(const node of record.addedNodes)translateBranch(node)});
- observer.observe(document.body,{childList:true,subtree:true});
+ const observer=new MutationObserver(records=>{for(const record of records){if(record.type==='characterData')translateBranch(record.target);else for(const node of record.addedNodes)translateBranch(node)}});
+ observer.observe(document.body,{childList:true,subtree:true,characterData:true});
 }
 </script></body></html>
