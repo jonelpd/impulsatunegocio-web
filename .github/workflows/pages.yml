@@ -71,7 +71,7 @@ jobs:
                   if tag=='script' and self.in_script:
                       self.inline.append(''.join(self.current)); self.in_script=False
           errors=[]
-          for file in [Path('index.html'),Path('en.html'),*Path('portfolio').glob('*.html')]:
+          for file in [Path('index.html'),Path('en.html'),Path('crm-admin.html'),Path('crm-demo.html'),*Path('portfolio').glob('*.html')]:
               parser=Audit(); parser.feed(file.read_text(encoding='utf-8'))
               for item in set(parser.ids):
                   if parser.ids.count(item)>1: errors.append(f'{file}: id duplicado {item}')
@@ -80,6 +80,25 @@ jobs:
                   if result.returncode: errors.append(f'{file}: JavaScript {n+1}: {result.stderr}')
           if errors: raise SystemExit('\\n'.join(errors))
           print('Estructura HTML y JavaScript sin errores detectados')
+          PY
+      - name: Verificar accesos y traducción del CRM
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          crm=Path('crm-admin.html').read_text(encoding='utf-8')
+          es=Path('index.html').read_text(encoding='utf-8')
+          en=Path('en.html').read_text(encoding='utf-8')
+          for code in ('es','en'):
+              assert f'crm-admin.html?lang={code}' in crm, f'Missing CRM language link: {code}'
+          assert 'crm-admin.html?lang=es' in es, 'Spanish site missing Spanish CRM link'
+          assert 'crm-admin.html?lang=en' in en, 'English site missing English CRM link'
+          assert "attributeFilter:['placeholder','title','aria-label']" in crm, 'Missing dynamic CRM attribute translation'
+          assert "characterData:true" in crm, 'Missing dynamic CRM text translation'
+          assert "client.from('crm_admins')" in crm, 'CRM admin authorization check missing'
+          assert 'auth.signInWithPassword' in crm, 'CRM sign-in missing'
+          assert 'auth.signOut' in crm, 'CRM sign-out missing'
+          assert "data-view=\"dashboard\"" in crm and "data-view=\"agenda\"" in crm, 'CRM navigation incomplete'
+          print('CRM: language links, authentication and translation hooks verified')
           PY
       - name: Verificar coherencia de configuradores y contacto
         run: |
