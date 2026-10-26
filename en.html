@@ -157,6 +157,36 @@ button,input,select,textarea{max-width:100%}
 #contact #formToast:empty{display:none}
 @media(max-width:850px){#contact .contact-grid{grid-template-columns:1fr;gap:35px}#contact .contact-form{grid-template-columns:1fr;padding:19px}#contact .contact-form .field.full,#contact .contact-form .form-note,#contact .contact-form>.actions,#contact #contactSendOptions,#contact #formToast{grid-column:auto}}
 @media(max-width:560px){#contact .contact-grid{gap:24px}#contact .contact-form>.actions{flex-direction:column}#contact .contact-form>.actions .button{width:100%}}
+
+/* Spanish-reference hero parity: same dashboard structure and responsive geometry */
+#home .visual{display:block;position:relative;min-height:420px;padding:28px;overflow:hidden;background:var(--dark);color:white;box-shadow:0 24px 65px rgba(14,43,34,.16)}
+#home .visual::before{content:"";position:absolute;width:300px;height:300px;border-radius:50%;background:rgba(201,243,106,.13);top:-110px;right:-80px}
+#home .visual::after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;border:1px solid rgba(201,243,106,.25);bottom:-90px;left:-60px}
+#home .mock-top{display:flex;align-items:center;justify-content:space-between;font-size:.78rem;color:#c2d8cb;position:relative;z-index:1}
+#home .mock-dots{display:flex;gap:5px}
+#home .mock-dots i{display:block;width:7px;height:7px;border-radius:50%;background:#78998a}
+#home .dashboard{position:relative;z-index:1;margin-top:30px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.07);border-radius:20px;padding:22px}
+#home .dash-label{font-size:.78rem;color:#c2d8cb}
+#home .dash-title{font-size:1.65rem;letter-spacing:-.04em;font-weight:800;line-height:1.25;margin:6px 0 22px;overflow-wrap:break-word}
+#home .dashboard .bars{height:116px;display:flex;align-items:end;gap:10px;border-bottom:1px solid rgba(255,255,255,.17);padding:0 6px 10px}
+#home .dashboard .bars span{flex:1;border-radius:7px 7px 2px 2px;background:var(--lime);opacity:.9}
+#home .dashboard .bars span:nth-child(1){height:32%}
+#home .dashboard .bars span:nth-child(2){height:48%}
+#home .dashboard .bars span:nth-child(3){height:42%}
+#home .dashboard .bars span:nth-child(4){height:67%}
+#home .dashboard .bars span:nth-child(5){height:58%}
+#home .dashboard .bars span:nth-child(6){height:82%}
+#home .dashboard .bars span:nth-child(7){height:100%}
+#home .dash-bottom{display:flex;justify-content:space-between;gap:10px;margin-top:16px;font-size:.8rem;color:#d7e6dd}
+#home .floating{position:absolute;z-index:2;bottom:26px;left:10px;background:var(--lime);color:var(--dark);padding:15px 18px;border-radius:15px;box-shadow:0 14px 35px rgba(0,0,0,.2);font-size:.85rem;font-weight:800;transform:rotate(-3deg)}
+#home .floating small{display:block;font-weight:600;opacity:.72}
+#home .trustline{display:flex;align-items:center;gap:12px;margin-top:29px;font-size:.88rem;color:var(--muted)}
+#home .dots{display:flex;gap:4px;flex:none}
+#home .dots i{display:block;width:6px;height:6px;background:#6bb28b;border-radius:50%}
+#home h1{color:#102c23}
+@media(max-width:850px){#home .visual{min-height:370px}}
+@media(max-width:560px){#home .visual{min-height:345px;padding:19px;border-radius:23px}#home .dashboard{padding:17px}#home .floating{left:8px;bottom:18px}#home .dash-title{overflow-wrap:anywhere}}
+@media(max-width:380px){#home .dash-bottom{flex-wrap:wrap}#home .floating{font-size:.72rem;padding:10px 12px}}
 </style>
 </head>
 <body>
@@ -169,7 +199,22 @@ button,input,select,textarea{max-width:100%}
 <nav class="navlinks" id="navLinks" aria-label="Main navigation"><a href="#services">Services</a><a href="#pricing">Pricing</a><a href="#diagnostic">Assessment</a><a href="#process">Our process</a><a href="#projects">Projects</a><a class="button" href="#planner">Get an estimate ↗</a></nav>
 </div></header>
 <main>
-<section class="hero" id="home"><div class="wrap hero-grid"><div><span class="eyebrow">Digital solutions for businesses</span><h1>Your business has a future. <em>Let's help it grow.</em></h1><p class="lead">We create professional websites and practical digital solutions for freelancers and small businesses looking to reach more customers and work more efficiently.</p><div class="hero-actions"><a class="button" href="#contact">Tell us about your idea ↗</a><a class="button outline" href="#services">Explore services</a></div><p class="trust">Direct communication · Clear scope · Tailored solutions</p></div><div class="visual" aria-label="Conceptual digital growth dashboard"><span class="overline">DIGITAL STRATEGY</span><h2>From an idea to a strong digital presence.</h2><div class="bars" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><p>Designed around your business goals.</p></div></div></section>
+<section class="hero" id="home">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">Digital solutions for businesses</span>
+      <h1>Your business has a future. <em>Let's help it grow.</em></h1>
+      <p class="lead">We create professional websites and practical digital solutions for freelancers and small businesses looking to reach more customers and work more efficiently.</p>
+      <div class="hero-actions"><a class="button" href="#contact">Tell us about your idea <span aria-hidden="true">↗</span></a><a class="button outline" href="#services">Explore services</a></div>
+      <div class="trustline"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span>Direct communication · Clear scope · Tailored solutions</span></div>
+    </div>
+    <div class="visual" role="img" aria-label="Conceptual illustration of a digital growth dashboard">
+      <div class="mock-top"><span>DIGITAL STRATEGY</span><span class="mock-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+      <div class="dashboard"><div class="dash-label">Your business, ready to move forward</div><div class="dash-title">From an idea to a strong digital presence.</div><div class="bars" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><div class="dash-bottom"><span>Design · Technology · Goals</span><strong>One step at a time ↗</strong></div></div>
+      <div class="floating">Practical solutions<small>Without unnecessary complexity</small></div>
+    </div>
+  </div>
+</section>
 <section class="section white" id="services"><div class="wrap"><span class="eyebrow">What we do</span><h2>Digital services that make sense for your business.</h2><p class="section-intro">We focus on practical solutions, realistic budgets and projects with a clearly defined scope.</p><div class="grid">
 <article class="card"><h3>Professional websites</h3><p>Responsive business websites with clear content, straightforward navigation and easy ways for customers to contact you.</p><a class="textlink" href="#planner" data-type="presentation">Estimate a website ↗</a></article>
 <article class="card"><h3>Online stores and catalogues</h3><p>Showcase products, receive enquiries and, when appropriate, set up a complete e-commerce experience with payments and delivery options.</p><a class="textlink" href="#planner" data-type="store">Explore e-commerce ↗</a></article>
