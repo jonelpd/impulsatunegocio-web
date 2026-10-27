@@ -52,8 +52,8 @@ Deno.serve(async req => {
     const firstName=String(lead.name||'').trim().split(/\s+/)[0].slice(0,60);
     const subject=english?'We received your enquiry | Impulsa tu Negocio Ya':'Hemos recibido tu solicitud | Impulsa tu Negocio Ya';
     const body=english
-      ? ['Hello '+firstName+',','','Thank you for contacting Impulsa tu Negocio Ya.','We have received your enquiry successfully. Our team will review it and get back to you as soon as possible.','','Your reference: '+lead.reference,'','There is no need to submit another enquiry. You can reply to this email if you would like to add information.','','Kind regards,','Impulsa tu Negocio Ya','Digital solutions for businesses']
-      : ['Hola '+firstName+',','','Gracias por contactar con Impulsa tu Negocio Ya.','Hemos recibido correctamente tu solicitud. Nuestro equipo la revisará y te responderá lo antes posible.','','Tu referencia: '+lead.reference,'','No necesitas enviar otra solicitud. Puedes responder a este correo si deseas añadir información.','','Un saludo,','Impulsa tu Negocio Ya','Soluciones digitales para negocios'];
+      ? ['Hello '+firstName+',','','Thank you for contacting Impulsa tu Negocio Ya.','We have received your enquiry successfully. Our team will review it and get back to you as soon as possible.','','Your reference: '+lead.reference,'','There is no need to submit another enquiry. You do not need to reply to this email.','','Kind regards,','Impulsa tu Negocio Ya','Digital solutions for businesses']
+      : ['Hola '+firstName+',','','Gracias por contactar con Impulsa tu Negocio Ya.','Hemos recibido correctamente tu solicitud. Nuestro equipo la revisará y te responderá lo antes posible.','','Tu referencia: '+lead.reference,'','No necesitas enviar otra solicitud. No es necesario responder a este correo.','','Un saludo,','Impulsa tu Negocio Ya','Soluciones digitales para negocios'];
     try{
       await smtp.sendMail({from:user,to:lead.email,replyTo:user,subject,text:body.join('\n')});
       const {error:markError}=await db.from('lead_ack_outbox')
