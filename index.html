@@ -221,6 +221,9 @@ button,input,select,textarea{max-width:100%}
 @media(max-width:850px){.header .navlinks a:not(.button){white-space:normal}}
 @media(max-width:560px){.footer{padding:28px 0}.footer .footer-links{gap:9px 14px}.footer .brand .brand-name{font-size:.96rem}}
 .header .navlinks a:not(.button){white-space:nowrap} .header .navlinks a:focus-visible,.language-switch a:focus-visible{outline-offset:5px} .project .text-link{display:inline-flex;min-height:44px;align-items:center;text-decoration:underline;text-underline-offset:4px} @media(min-width:851px) and (max-width:1120px){.header .navlinks{gap:12px;font-size:.83rem}.header .nav{gap:12px}.header .brand-name{font-size:1.2rem}.header .navlinks .button{padding:11px 13px}} @media(max-width:850px){.header .navlinks{max-height:calc(100dvh - 78px);overflow-y:auto;box-shadow:0 16px 25px #0e2b221a}.header .navlinks a{min-height:44px;display:flex!important;align-items:center}.header .navlinks a.button{justify-content:center}}
+
+/* Confirmación visible solo tras recepción confirmada por el servidor */
+.enquiry-confirmation[hidden]{display:none!important}.enquiry-confirmation{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;padding:20px;background:rgba(9,32,24,.68);backdrop-filter:blur(5px)}.enquiry-confirmation-dialog{position:relative;width:min(100%,480px);padding:38px 30px 30px;background:#fff;color:#143c30;border-radius:22px;text-align:center;box-shadow:0 25px 80px rgba(0,0,0,.25)}.enquiry-confirmation-icon{display:grid;place-items:center;width:66px;height:66px;margin:0 auto 18px;border-radius:50%;background:#e1f5e9;color:#16684c;font-size:2rem;font-weight:900}.enquiry-confirmation-dialog h2{font-size:clamp(1.45rem,4vw,2rem);line-height:1.2;margin:0 0 12px}.enquiry-confirmation-dialog p{margin:0 0 16px}.enquiry-confirmation-reference{padding:12px;background:#f2f7f4;border-radius:10px;overflow-wrap:anywhere;font-weight:700}.enquiry-confirmation-dialog .button{margin-top:18px;min-width:140px}@media(max-width:480px){.enquiry-confirmation-dialog{padding:30px 20px 24px}}
 </style>
 </head>
 <body>
@@ -652,6 +655,7 @@ if (LEAD_BACKEND_ENABLED) {
       const result = await response.json();
       if (!response.ok || !result.ok) throw new Error(result?.error === 'Verification failed' ? 'turnstile' : result?.error === 'Invalid fields' ? 'fields' : 'server');
       status.textContent = 'Solicitud recibida. Referencia: ' + result.reference;
+      showEnquiryConfirmation(result.reference);
       status.classList.add('show');
       contactForm.reset();
       document.getElementById('contactSendOptions').hidden = true;
@@ -661,6 +665,16 @@ if (LEAD_BACKEND_ENABLED) {
     } finally { submit.disabled = false; if (window.turnstile) window.turnstile.reset(); }
   }, {capture:true});
 }
+
+const enquiryConfirmation = document.getElementById('enquiryConfirmation');
+const closeEnquiryConfirmation = document.getElementById('closeEnquiryConfirmation');
+let enquiryConfirmationPreviousFocus = null;
+function hideEnquiryConfirmation(){enquiryConfirmation.hidden=true;document.body.style.overflow='';if(enquiryConfirmationPreviousFocus?.isConnected)enquiryConfirmationPreviousFocus.focus();}
+function showEnquiryConfirmation(reference){enquiryConfirmationPreviousFocus=document.activeElement;document.getElementById('enquiryConfirmationReference').textContent="Número de referencia: "+String(reference||'');enquiryConfirmation.hidden=false;document.body.style.overflow='hidden';closeEnquiryConfirmation.focus();}
+closeEnquiryConfirmation.addEventListener('click',hideEnquiryConfirmation);
+enquiryConfirmation.addEventListener('click',event=>{if(event.target===enquiryConfirmation)hideEnquiryConfirmation()});
+document.addEventListener('keydown',event=>{if(enquiryConfirmation.hidden)return;if(event.key==='Escape'){event.preventDefault();hideEnquiryConfirmation()}else if(event.key==='Tab'){event.preventDefault();closeEnquiryConfirmation.focus()}});
 </script>
+<div class="enquiry-confirmation" id="enquiryConfirmation" hidden><div class="enquiry-confirmation-dialog" role="dialog" aria-modal="true" aria-labelledby="enquiryConfirmationTitle" aria-describedby="enquiryConfirmationText"><div class="enquiry-confirmation-icon" aria-hidden="true">✓</div><h2 id="enquiryConfirmationTitle">¡Solicitud recibida correctamente!</h2><p id="enquiryConfirmationText">Hemos recibido tu solicitud. Nos pondremos en contacto contigo lo antes posible.</p><p class="enquiry-confirmation-reference" id="enquiryConfirmationReference"></p><button type="button" class="button" id="closeEnquiryConfirmation">Entendido</button></div></div>
 </body>
 </html>
