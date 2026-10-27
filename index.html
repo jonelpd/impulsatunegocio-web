@@ -399,6 +399,7 @@ button,input,select,textarea{max-width:100%}
 
 </main>
 <footer class="footer"><div class="wrap footer-inner"><div><a class="brand" href="#inicio" aria-label="Impulsa tu Negocio Ya — Inicio"><img src="assets/impulsa-tu-negocio-ya-icon.svg" width="38" height="38" alt="" aria-hidden="true"><span class="brand-copy"><strong class="brand-name">Impulsa tu Negocio Ya</strong><span class="brand-tag">WEB · TECNOLOGÍA · CRECIMIENTO</span></span></a><p>Prototipo de trabajo · Borradores legales pendientes de completar.</p></div><nav class="footer-links" aria-label="Enlaces del pie de página"><a href="#servicios">Servicios</a><a href="#metodo">Método</a><a href="#precios">Precios</a><a href="#planificador">Presupuesto</a><a href="#diagnostico">Diagnóstico</a><a href="#proyectos">Proyectos</a><a href="#preguntas">Preguntas</a><a href="#contacto">Contacto</a><a href="#aviso-legal">Aviso legal (borrador)</a><a href="#privacidad">Privacidad (borrador)</a><a href="#cookies">Cookies</a><a href="en.html" lang="en" hreflang="en">English</a><a href="crm-admin.html?lang=es" rel="nofollow" aria-label="Acceso profesional — CRM privado">Acceso profesional</a></nav></div></footer>
+<div class="enquiry-confirmation" id="enquiryConfirmation" hidden><div class="enquiry-confirmation-dialog" role="dialog" aria-modal="true" aria-labelledby="enquiryConfirmationTitle" aria-describedby="enquiryConfirmationText"><div class="enquiry-confirmation-icon" aria-hidden="true">✓</div><h2 id="enquiryConfirmationTitle">¡Solicitud recibida correctamente!</h2><p id="enquiryConfirmationText">Hemos recibido tu solicitud. Nos pondremos en contacto contigo lo antes posible.</p><p class="enquiry-confirmation-reference" id="enquiryConfirmationReference"></p><button type="button" class="button" id="closeEnquiryConfirmation">Entendido</button></div></div>
 <script>
 
 const diagnosticForm = document.getElementById('diagnosticForm');
@@ -675,6 +676,6 @@ closeEnquiryConfirmation.addEventListener('click',hideEnquiryConfirmation);
 enquiryConfirmation.addEventListener('click',event=>{if(event.target===enquiryConfirmation)hideEnquiryConfirmation()});
 document.addEventListener('keydown',event=>{if(enquiryConfirmation.hidden)return;if(event.key==='Escape'){event.preventDefault();hideEnquiryConfirmation()}else if(event.key==='Tab'){event.preventDefault();closeEnquiryConfirmation.focus()}});
 </script>
-<div class="enquiry-confirmation" id="enquiryConfirmation" hidden><div class="enquiry-confirmation-dialog" role="dialog" aria-modal="true" aria-labelledby="enquiryConfirmationTitle" aria-describedby="enquiryConfirmationText"><div class="enquiry-confirmation-icon" aria-hidden="true">✓</div><h2 id="enquiryConfirmationTitle">¡Solicitud recibida correctamente!</h2><p id="enquiryConfirmationText">Hemos recibido tu solicitud. Nos pondremos en contacto contigo lo antes posible.</p><p class="enquiry-confirmation-reference" id="enquiryConfirmationReference"></p><button type="button" class="button" id="closeEnquiryConfirmation">Entendido</button></div></div>
+
 </body>
 </html>
