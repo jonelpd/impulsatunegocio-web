@@ -131,6 +131,36 @@ jobs:
               assert 'encodeURIComponent(contactBrief())' in source or 'encodeURIComponent(getContactBrief())' in source, f'{path}: missing encoded contact draft'
               print(f'{path}: configurator and contact checks passed')
           PY
+      - name: Verificar confirmaciones bilingües y consentimiento
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          for language, path, confirmation in (
+              ('es', 'index.html', '¡Solicitud recibida correctamente!'),
+              ('en', 'en.html', 'Your enquiry has been received!'),
+          ):
+              html = Path(path).read_text(encoding='utf-8')
+              required = (
+                  'id="enquiryConfirmation"',
+                  'id="closeEnquiryConfirmation"',
+                  'function showEnquiryConfirmation(reference)',
+                  'showEnquiryConfirmation(result.reference)',
+                  'id="leadPrivacyConsent" required',
+                  'class="privacy-consent"',
+                  'class="enquiry-confirmation"',
+                  confirmation,
+              )
+              for item in required:
+                  assert item in html, f'{path}: missing {item}'
+              assert html.index('id="enquiryConfirmation"') < html.rfind('<script'), f'{path}: modal must exist before initialization'
+              assert 'if (!response.ok || !result.ok)' in html, f'{path}: missing server confirmation guard'
+              print(f'{language}: acknowledgement modal and privacy consent verified')
+          notify = Path('supabase/functions/notify-leads/index.ts').read_text(encoding='utf-8')
+          for item in ('No es necesario responder a este correo.', 'You do not need to reply to this email.', "text:body.join('\\n')"):
+              assert item in notify, f'notify-leads: missing {item}'
+          assert "text:body.join('\\\\n')" not in notify, 'notify-leads: literal slash-n separators detected'
+          print('Bilingual email acknowledgement format verified')
+          PY
       - name: Preparar carpeta pública
         run: |
           mkdir -p _site/portfolio _site/assets
